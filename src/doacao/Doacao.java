@@ -5,7 +5,6 @@ import java.sql.Time;
 import src.triagem.Triagem;
 import src.doador.Doador;
 
-
 public class Doacao {
     private Date data;
     private Time hora;
@@ -27,13 +26,11 @@ public class Doacao {
     public Triagem getTriagem() { return triagem; }
     public Doador getDoador() { return doador; }
 
-    public static void criarDoacao(Date data, Time hora, double volume, Triagem triagem, Doador doador) {
+    public static void cadastrarDoacao(Date data, Time hora, double volume, Triagem triagem, Doador doador) {
         if (!triagem.isStatus()) {
-            System.out.println("Triagem não aprovada. Doação cancelada.");
-            return;
+            throw new IllegalArgumentException("Triagem não aprovada. Doação cancelada.");
         }
-        Doacao doacao = new Doacao(data, hora, volume, triagem, doador);
-        // TODO: implementar lógica de gravação
-        System.out.println("Doação criada com sucesso: " + doacao);
+        new Doacao(data, hora, volume, triagem, doador);
+        System.out.println("Doação cadastrada com sucesso!");
     }
 }
