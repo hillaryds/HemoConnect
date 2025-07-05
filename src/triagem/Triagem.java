@@ -1,4 +1,4 @@
-package src;
+package src.triagem;
 
 import java.sql.Date;
 
