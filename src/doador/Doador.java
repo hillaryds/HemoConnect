@@ -53,7 +53,7 @@ public class Doador {
 
     public static void cadastrarDoador(String nome, int cpf, String sexo, String tipoSanguineo, int telefone, String bairro, String nacionalidade, String cidade) {
         if (nome == null || nome.trim().isEmpty()) {
-            throw new IllegalArgumentException("Nome não pode ser vazio");
+            throw new IllegalArgumentException("O campo nome e obrigatorio.");
         }
         
         if (cpf <= 0) {
@@ -61,11 +61,14 @@ public class Doador {
         }
         
         if (tipoSanguineo == null || tipoSanguineo.trim().isEmpty()) {
-            throw new IllegalArgumentException("Tipo sanguíneo não pode ser vazio");
+            throw new IllegalArgumentException("O campo tipo sanguineo e obrigatorio");
         }
         
         new Doador(nome, cpf, sexo, tipoSanguineo, telefone, bairro, nacionalidade, cidade);
         
         System.out.println("Doador cadastrado com sucesso!");
-    }
+    } 
+
+    
+
 }
