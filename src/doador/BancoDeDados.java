@@ -2,6 +2,7 @@
     Classe temporaria para simular um banco de dados de doadores.
     Esta classe é usada apenas para testes e não deve ser considerada no projeto final.
  */
+
 import java.util.ArrayList;
 import java.util.List;
 
