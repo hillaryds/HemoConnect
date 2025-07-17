@@ -1,14 +1,12 @@
 package src.triagem;
 
 import java.sql.Date;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Calendar;
 
-public class Triagem{
-    //! Lista estática temporária para armazenar triagens (será substituída por PostgreSQL)
-    private static List<Triagem> triagens = new ArrayList<>();
-    
+/**
+ * Model - Classe Triagem
+ * Representa a entidade Triagem com dados e regras de negócio
+ */
+public class Triagem {
     private Long id; // ID único da triagem (chave primária no banco)
     private int batimentosPorMinuto;
     private String pressaoArterial;
@@ -17,7 +15,7 @@ public class Triagem{
     private boolean status;
     private Date date;
 
-    Triagem(Long id, int bPM, String pressaoArt, double temperatura, double peso, boolean status, Date date){
+    public Triagem(Long id, int bPM, String pressaoArt, double temperatura, double peso, boolean status, Date date){
         this.id = id;
         this.batimentosPorMinuto = bPM;
         this.pressaoArterial = pressaoArt;
@@ -27,8 +25,7 @@ public class Triagem{
         this.date = date;
     }
     
-    //?Construtor sem ID (para novas triagens antes da inserção no banco)
-    Triagem(int bPM, String pressaoArt, double temperatura, double peso, boolean status, Date date){
+    public Triagem(int bPM, String pressaoArt, double temperatura, double peso, boolean status, Date date){
         this.batimentosPorMinuto = bPM;
         this.pressaoArterial = pressaoArt;
         this.temperatura = temperatura;
@@ -93,20 +90,6 @@ public class Triagem{
         this.date = date;
     }
 
-    public static void criarTriagem(int batimentosPorMinuto, String pressaoArterial, double temperatura, double peso, Date date){
-        boolean status = verificarCriteriosTriagem(batimentosPorMinuto, pressaoArterial, temperatura, peso);
-        
-    
-        Triagem triagem = new Triagem(batimentosPorMinuto, pressaoArterial, temperatura, peso, status, date);
-        
-        //!Temporário: Adiciona à lista (substituir por inserção no PostgreSQL)
-        triagens.add(triagem);
-        
-        System.out.println("Triagem criada com sucesso!");
-        
-        // TODO: Implementar persistência no PostgreSQL
-    }
-
     public static boolean verificarCriteriosTriagem(int batimentosPorMinuto, String pressaoArterial, double temperatura, double peso) {   
         if (batimentosPorMinuto < 60 || batimentosPorMinuto > 100) {
             return false;
@@ -169,135 +152,4 @@ public class Triagem{
             return problemas.toString();
         }
     }
-
-
-    public void exibirTriagem() {
-        System.out.println("=== DADOS DA TRIAGEM ===");
-        System.out.println("Data: " + this.date);
-        System.out.println("Batimentos por minuto: " + this.batimentosPorMinuto + " bpm");
-        System.out.println("Pressão arterial: " + this.pressaoArterial + " mmHg");
-        System.out.println("Temperatura: " + this.temperatura + "°C");
-        System.out.println("Peso: " + this.peso + " kg");
-        System.out.println("Status: " + (this.status ? "APROVADO" : "REPROVADO"));
-        System.out.println("Descrição: " + getDescricaoTriagem());
-        System.out.println("========================");
-    }
-
-    
-    public static List<Triagem> listarTriagemDate(Date date) {
-        //! Temporário: substituir por consulta SQL
-        List<Triagem> triagensData = new ArrayList<>();
-        
-        for (Triagem triagem : triagens) {
-            if (triagem.getDate().equals(date)) {
-                triagensData.add(triagem);
-            }
-        }
-        
-        return triagensData;
-        
-        // TODO: Implementar consulta no PostgreSQL
-    }
-
-    
-    public static void totalDeTriagemDia() {
-        Date hoje = new Date(System.currentTimeMillis());
-        
-        //! Temporário: substituir por consulta
-        List<Triagem> triagensHoje = listarTriagemDate(hoje);
-        
-        System.out.println("=== TOTAL DE TRIAGENS DO DIA ===");
-        System.out.println("Data: " + hoje);
-        System.out.println("Total de triagens: " + triagensHoje.size());
-        
-        int aprovadas = 0;
-        int reprovadas = 0;
-        
-        for (Triagem triagem : triagensHoje) {
-            if (triagem.isStatus()) {
-                aprovadas++;
-            } else {
-                reprovadas++;
-            }
-        }
-        
-        System.out.println("Triagens aprovadas: " + aprovadas);
-        System.out.println("Triagens reprovadas: " + reprovadas);
-        System.out.println("===============================");
-        
-        // TODO: Implementar consulta SQL otimizada no PostgreSQL
-    }
-
-    public static void totalDeTriagemMes() {
-        Calendar cal = Calendar.getInstance();
-        int mesAtual = cal.get(Calendar.MONTH);
-        int anoAtual = cal.get(Calendar.YEAR);
-        
-        //! Temporário: substituir por consulta SQL
-        int totalMes = 0;
-        int aprovadas = 0;
-        int reprovadas = 0;
-        
-        for (Triagem triagem : triagens) {
-            cal.setTime(triagem.getDate());
-            int mesTriagem = cal.get(Calendar.MONTH);
-            int anoTriagem = cal.get(Calendar.YEAR);
-            
-            if (mesTriagem == mesAtual && anoTriagem == anoAtual) {
-                totalMes++;
-                if (triagem.isStatus()) {
-                    aprovadas++;
-                } else {
-                    reprovadas++;
-                }
-            }
-        }
-        
-        System.out.println("=== TOTAL DE TRIAGENS DO MÊS ===");
-        System.out.println("Mês/Ano: " + (mesAtual + 1) + "/" + anoAtual);
-        System.out.println("Total de triagens: " + totalMes);
-        System.out.println("Triagens aprovadas: " + aprovadas);
-        System.out.println("Triagens reprovadas: " + reprovadas);
-        System.out.println("===============================");
-        
-        // TODO: Implementar consulta SQL otimizada no PostgreSQL
-    }
-
-    
-    public void atualizarTriagem(int batimentosPorMinuto, String pressaoArterial, double temperatura, double peso) {
-        this.batimentosPorMinuto = batimentosPorMinuto;
-        this.pressaoArterial = pressaoArterial;
-        this.temperatura = temperatura;
-        this.peso = peso;
-        
-        // Recalcula o status baseado nos novos dados
-        this.status = verificarCriteriosTriagem(batimentosPorMinuto, pressaoArterial, temperatura, peso);
-        
-        System.out.println("Triagem atualizada com sucesso!");
-        System.out.println("Novo status: " + (this.status ? "APROVADO" : "REPROVADO"));
-        
-        // TODO: Implementar atualização no PostgreSQL
-    }
-
-    
-    public void removerTriagem() {
-        //! Temporário: Remove da lista em memória (substituir por exclusão no PostgreSQL)
-        if (triagens.remove(this)) {
-            System.out.println("Triagem removida com sucesso!");
-        } else {
-            System.out.println("Erro: Triagem não encontrada na lista.");
-        }
-        
-        // TODO: Implementar exclusão no PostgreSQL
-    }
-
-
-    public static List<Triagem> obterTodasTriagens() {
-        //!Temporário
-        return new ArrayList<>(triagens);
-        
-        // TODO: Implementar consulta no PostgreSQL
-    }
-
-
 }
