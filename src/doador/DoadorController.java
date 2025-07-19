@@ -1,0 +1,246 @@
+import java.sql.Date;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.ArrayList;
+
+public class DoadorController {
+    public static Doador criarDoador(String nome, Long cpf, String sexo, String tipoSanguineo, Date dataNascimento, Long telefone, String bairro, String nacionalidade, String cidade) {
+        try {
+            if (!validarDadosEntrada(nome, cpf, sexo, tipoSanguineo, dataNascimento, telefone, bairro, nacionalidade, cidade)) {
+                return null;
+            }
+            
+            if (DoadorDAO.cpfExiste(cpf, null)) {
+                System.err.println("CPF já existe no sistema");
+                return null;
+            }
+            
+            Doador doador = new Doador(nome, cpf, sexo, tipoSanguineo, dataNascimento, telefone, bairro, nacionalidade, cidade);
+            
+            if (!doador.validarDados()) {
+                System.err.println("Dados do doador inválidos");
+                return null;
+            }
+            
+            return DoadorDAO.inserir(doador);
+            
+        } catch (SQLException e) {
+            System.err.println("Erro ao criar doador: " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public static void criarDoadorComMensagem(String nome, Long cpf, String sexo, String tipoSanguineo, Date dataNascimento, Long telefone, String bairro, String nacionalidade, String cidade) {
+        Doador doador = criarDoador(nome, cpf, sexo, tipoSanguineo, dataNascimento, telefone, bairro, nacionalidade, cidade);
+        
+        if (doador != null) {
+            DoadorView.exibirMensagemDoadorCriado(doador);
+        } else {
+            DoadorView.exibirMensagemErro("Erro ao criar doador");
+        }
+    }
+    
+    public static List<Doador> listarTodosDoadores() {
+        try {
+            return DoadorDAO.buscarTodos();
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar doadores: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+    
+    public static void exibirTodosDoadores() {
+        try {
+            List<Doador> doadores = DoadorDAO.buscarTodos();
+            DoadorView.exibirListaDoadores(doadores);
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar doadores: " + e.getMessage());
+            DoadorView.exibirMensagemErro("Erro ao buscar doadores: " + e.getMessage());
+        }
+    }
+    
+    public static Doador buscarDoadorPorId(Long id) {
+        try {
+            return DoadorDAO.buscarPorId(id);
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar doador por ID: " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public static Doador buscarDoadorPorCpf(Long cpf) {
+        try {
+            return DoadorDAO.buscarPorCpf(cpf);
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar doador por CPF: " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public static List<Doador> listarDoadoresPorTipoSanguineo(String tipoSanguineo) {
+        try {
+            return DoadorDAO.buscarPorTipoSanguineo(tipoSanguineo);
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar doadores por tipo sanguíneo: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+    
+    public static List<Doador> listarDoadoresPorCidade(String cidade) {
+        try {
+            return DoadorDAO.buscarPorCidade(cidade);
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar doadores por cidade: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public static boolean atualizarDoador(Doador doador) {
+        try {
+            if (doador.getId() == null) {
+                return false;
+            }
+            
+            if (!doador.validarDados()) {
+                System.err.println("Dados do doador inválidos");
+                return false;
+            }
+            
+            if (DoadorDAO.cpfExiste(doador.getCpf(), doador.getId())) {
+                System.err.println("CPF já existe no sistema");
+                return false;
+            }
+            
+            return DoadorDAO.atualizar(doador);
+            
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar doador: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    public static boolean removerDoador(Long id) {
+        try {
+            if (id == null) {
+                return false;
+            }
+            
+            return DoadorDAO.remover(id);
+            
+        } catch (SQLException e) {
+            System.err.println("Erro ao remover doador: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    public static boolean removerDoadorPorCpf(Long cpf) {
+        try {
+            if (cpf == null) {
+                return false;
+            }
+            
+            return DoadorDAO.removerPorCpf(cpf);
+            
+        } catch (SQLException e) {
+            System.err.println("Erro ao remover doador: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    public static void removerDoadorInterativo() {
+        Long cpf = DoadorView.solicitarCpfParaRemocao();
+        
+        if (cpf != null) {
+            boolean sucesso = removerDoadorPorCpf(cpf);
+            
+            if (sucesso) {
+                DoadorView.exibirMensagemRemocaoSucesso(cpf);
+            } else {
+                DoadorView.exibirMensagemRemocaoFalha(cpf);
+            }
+        }
+    }
+    
+    public static boolean atualizarUltimaDoacao(Long doadorId, Date dataDoacao) {
+        try {
+            return DoadorDAO.atualizarUltimaDoacao(doadorId, dataDoacao);
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar última doação: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    public static boolean podeDoar(Long doadorId) {
+        try {
+            Doador doador = DoadorDAO.buscarPorId(doadorId);
+            if (doador == null) {
+                return false;
+            }
+            
+            if (!doador.podeDoar()) {
+                return false;
+            }
+            
+            if (doador.getUltimaDoacao() != null) {
+                long diffInMillies = System.currentTimeMillis() - doador.getUltimaDoacao().getTime();
+                long diffInDays = diffInMillies / (24 * 60 * 60 * 1000);
+                return diffInDays >= 60;
+            }
+            
+            return true;
+            
+        } catch (SQLException e) {
+            System.err.println("Erro ao verificar se doador pode doar: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    private static boolean validarDadosEntrada(String nome, Long cpf, String sexo, String tipoSanguineo, Date dataNascimento, Long telefone, String bairro, String nacionalidade, String cidade) {
+        if (nome == null || nome.trim().isEmpty()) {
+            System.err.println("Nome não pode ser vazio");
+            return false;
+        }
+        
+        if (!Doador.validarCpf(cpf)) {
+            System.err.println("CPF deve ter 11 dígitos");
+            return false;
+        }
+        
+        if (sexo == null || sexo.trim().isEmpty()) {
+            System.err.println("Sexo não pode ser vazio");
+            return false;
+        }
+        
+        if (!Doador.validarTipoSanguineo(tipoSanguineo)) {
+            System.err.println("Tipo sanguíneo inválido");
+            return false;
+        }
+        
+        if (dataNascimento == null) {
+            System.err.println("Data de nascimento não pode ser vazia");
+            return false;
+        }
+        
+        if (telefone == null || telefone <= 0) {
+            System.err.println("Telefone inválido");
+            return false;
+        }
+        
+        if (bairro == null || bairro.trim().isEmpty()) {
+            System.err.println("Bairro não pode ser vazio");
+            return false;
+        }
+        
+        if (nacionalidade == null || nacionalidade.trim().isEmpty()) {
+            System.err.println("Nacionalidade não pode ser vazia");
+            return false;
+        }
+        
+        if (cidade == null || cidade.trim().isEmpty()) {
+            System.err.println("Cidade não pode ser vazia");
+            return false;
+        }
+        
+        return true;
+    }
+}
