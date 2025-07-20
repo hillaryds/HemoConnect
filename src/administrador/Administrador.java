@@ -6,21 +6,24 @@ public class Administrador {
     private String nomeAdministrador;
     private String login;
     private String senha;
+    private Long idHospital; // Referência ao hospital associado
 
     // para objetos vindos do banco
-    public Administrador(Long id, String cargoHospital, String nomeAdministrador, String login, String senha) {
+    public Administrador(Long id, String cargoHospital, String nomeAdministrador, String login, String senha, Long idHospital) {
         this.id = id;
         this.cargoHospital = cargoHospital;
         this.nomeAdministrador = nomeAdministrador;
         this.login = login;
         this.senha = senha;
+        this.idHospital = idHospital;
     }
 
-    public Administrador(String cargoHospital, String nomeAdministrador, String login, String senha) {
+    public Administrador(String cargoHospital, String nomeAdministrador, String login, String senha, Long idHospital) {
         this.cargoHospital = cargoHospital;
         this.nomeAdministrador = nomeAdministrador;
         this.login = login;
         this.senha = senha;
+        this.idHospital = idHospital;
     }
 
     public Long getId() {
@@ -63,6 +66,14 @@ public class Administrador {
         this.senha = senha;
     }
 
+    public Long getIdHospital() {
+        return idHospital;
+    }
+
+    public void setIdHospital(Long idHospital) {
+        this.idHospital = idHospital;
+    }
+
     /**
      * Valida se os dados do administrador são válidos
      * @return true se válido, false caso contrário
@@ -71,7 +82,8 @@ public class Administrador {
         return nomeAdministrador != null && !nomeAdministrador.trim().isEmpty() &&
                login != null && !login.trim().isEmpty() &&
                senha != null && !senha.trim().isEmpty() &&
-               cargoHospital != null && !cargoHospital.trim().isEmpty();
+               cargoHospital != null && !cargoHospital.trim().isEmpty() &&
+               idHospital != null && idHospital > 0;
     }
 
     /**
@@ -92,6 +104,15 @@ public class Administrador {
         return senha != null && senha.trim().length() >= 4;
     }
 
+    /**
+     * Verifica se o ID do hospital é válido
+     * @param idHospital ID do hospital a ser verificado
+     * @return true se válido, false caso contrário
+     */
+    public static boolean validarIdHospital(Long idHospital) {
+        return idHospital != null && idHospital > 0;
+    }
+
     @Override
     public String toString() {
         return "Administrador{" +
@@ -99,6 +120,7 @@ public class Administrador {
                 ", cargoHospital='" + cargoHospital + '\'' +
                 ", nomeAdministrador='" + nomeAdministrador + '\'' +
                 ", login='" + login + '\'' +
+                ", idHospital=" + idHospital +
                 '}';
     }
 }
