@@ -16,7 +16,7 @@ public class DoacaoMain {
 
         // Testa conexão com banco
         if (!testarConexao()) {
-            System.err.println("❌ ERRO: Banco não conectado!");
+            System.err.println(" ERRO: Banco não conectado!");
             System.err.println("Verifique: PostgreSQL rodando, DatabaseConnection configurado");
             return;
         }
@@ -56,7 +56,7 @@ public class DoacaoMain {
         try {
             Connection conn = DatabaseConnection.getConnection();
             if (conn != null && !conn.isClosed()) {
-                System.out.println("🔗 DatabaseConnection funcionando!");
+                System.out.println(" DatabaseConnection funcionando!");
                 return true;
             }
         } catch (Exception e) {

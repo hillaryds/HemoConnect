@@ -58,7 +58,7 @@ public class DoacaoView {
             double volume = Double.parseDouble(scanner.nextLine());
 
             if (volume < 350 || volume > 500) {
-                System.out.println("❌ Volume deve estar entre 350ml e 500ml");
+                System.out.println(" Volume deve estar entre 350ml e 500ml");
                 return null;
             }
 
@@ -71,7 +71,7 @@ public class DoacaoView {
             return new Doacao(data, hora, volume, triagemId, doadorId);
 
         } catch (Exception e) {
-            System.out.println("❌ Erro ao coletar dados: " + e.getMessage());
+            System.out.println(" Erro ao coletar dados: " + e.getMessage());
             return null;
         }
     }
@@ -84,7 +84,7 @@ public class DoacaoView {
             System.out.print("Data (YYYY-MM-DD): ");
             return Date.valueOf(scanner.nextLine());
         } catch (Exception e) {
-            System.out.println("❌ Erro: data inválida");
+            System.out.println(" Erro: data inválida");
             return null;
         }
     }
@@ -100,7 +100,7 @@ public class DoacaoView {
             int ano = Integer.parseInt(scanner.nextLine());
             return new int[] { mes, ano };
         } catch (Exception e) {
-            System.out.println("❌ Erro: mês/ano inválido");
+            System.out.println(" Erro: mês/ano inválido");
             return null;
         }
     }
@@ -113,7 +113,7 @@ public class DoacaoView {
             System.out.print("ID da doação: ");
             return Long.parseLong(scanner.nextLine());
         } catch (Exception e) {
-            System.out.println("❌ Erro: ID inválido");
+            System.out.println(" Erro: ID inválido");
             return null;
         }
     }
@@ -123,11 +123,11 @@ public class DoacaoView {
      */
     public static void exibirDoacao(Doacao doacao) {
         if (doacao == null) {
-            System.out.println("❌ Doação não encontrada");
+            System.out.println(" Doação não encontrada");
             return;
         }
 
-        System.out.println("\n✅ DOAÇÃO ENCONTRADA:");
+        System.out.println("\n DOAÇÃO ENCONTRADA:");
         System.out.println("╔════════════════════════════════════╗");
         System.out.println("║           DETALHES DOAÇÃO          ║");
         System.out.println("╠════════════════════════════════════╣");
@@ -145,11 +145,11 @@ public class DoacaoView {
      */
     public static void exibirListaDoacoes(List<Doacao> doacoes, String titulo) {
         if (doacoes == null || doacoes.isEmpty()) {
-            System.out.println("❌ Nenhuma doação encontrada");
+            System.out.println(" Nenhuma doação encontrada");
             return;
         }
 
-        System.out.println("\n📋 " + titulo.toUpperCase() + ":");
+        System.out.println("\n " + titulo.toUpperCase() + ":");
         System.out.printf("%-5s %-12s %-10s %-8s %-8s %-8s%n",
                 "ID", "DATA", "HORA", "VOLUME", "TRIAGEM", "DOADOR");
         System.out.println("-".repeat(55));
@@ -165,7 +165,7 @@ public class DoacaoView {
         }
 
         System.out.println("-".repeat(55));
-        System.out.println("✅ Total: " + doacoes.size() + " doações");
+        System.out.println("Total: " + doacoes.size() + " doações");
     }
 
     /**
@@ -174,7 +174,7 @@ public class DoacaoView {
     public static void exibirEstatisticasDia(int total, double volumeTotal, Date data) {
         double media = total > 0 ? volumeTotal / total : 0;
 
-        System.out.println("\n📊 ESTATÍSTICAS DO DIA:");
+        System.out.println("\n ESTATÍSTICAS DO DIA:");
         System.out.println("╔═════════════════════════════════╗");
         System.out.println("║       DADOS CALCULADOS          ║");
         System.out.println("╠═════════════════════════════════╣");
@@ -191,7 +191,7 @@ public class DoacaoView {
     public static void exibirEstatisticasMes(int total, double volumeTotal, int mes, int ano) {
         double media = total > 0 ? volumeTotal / total : 0;
 
-        System.out.println("\n📈 RELATÓRIO MENSAL:");
+        System.out.println("\n RELATÓRIO MENSAL:");
         System.out.println("Período: " + mes + "/" + ano);
         System.out.println("Total doações: " + total);
         System.out.println("Volume total: " + volumeTotal + "ml");
@@ -202,7 +202,7 @@ public class DoacaoView {
      * Exibe estatísticas gerais
      */
     public static void exibirEstatisticasGerais(int totalGeral, double volumeGeral, int hoje, int esteMes) {
-        System.out.println("\n📊 ESTATÍSTICAS DO SISTEMA:");
+        System.out.println("\n ESTATÍSTICAS DO SISTEMA:");
         System.out.println("╔═══════════════════════════════════╗");
         System.out.println("║        DADOS CONSOLIDADOS         ║");
         System.out.println("╠═══════════════════════════════════╣");
@@ -211,8 +211,8 @@ public class DoacaoView {
         System.out.println(
                 "║ Volume médio: " + String.format("%-13.1f", totalGeral > 0 ? volumeGeral / totalGeral : 0) + "ml ║");
         System.out.println("╚═══════════════════════════════════╝");
-        System.out.println("\n📅 Doações hoje: " + hoje);
-        System.out.println("📅 Doações este mês: " + esteMes);
+        System.out.println("\n Doações hoje: " + hoje);
+        System.out.println(" Doações este mês: " + esteMes);
     }
 
     /**
@@ -242,7 +242,7 @@ public class DoacaoView {
                     doacaoAtual.getTriagemId(), doacaoAtual.getDoadorId());
 
         } catch (Exception e) {
-            System.out.println("❌ Erro ao coletar dados: " + e.getMessage());
+            System.out.println(" Erro ao coletar dados: " + e.getMessage());
             return null;
         }
     }
@@ -266,7 +266,7 @@ public class DoacaoView {
      * Exibe mensagens de sucesso
      */
     public static void exibirMensagemSucesso(String operacao, Doacao doacao) {
-        System.out.println("\n✅ " + operacao.toUpperCase() + " COM SUCESSO!");
+        System.out.println("\n " + operacao.toUpperCase() + " COM SUCESSO!");
         if (doacao != null && doacao.getId() != null) {
             System.out.println("╔════════════════════════════════════╗");
             System.out.println("║         CONFIRMAÇÃO BANCO          ║");
@@ -278,7 +278,7 @@ public class DoacaoView {
             System.out.println("║ Triagem: " + String.format("%-22d", doacao.getTriagemId()) + "║");
             System.out.println("║ Doador: " + String.format("%-23d", doacao.getDoadorId()) + "║");
             System.out.println("╚════════════════════════════════════╝");
-            System.out.println("💾 Operação via DatabaseConnection + PostgreSQL");
+            System.out.println(" Operação via DatabaseConnection + PostgreSQL");
         }
     }
 
@@ -286,7 +286,7 @@ public class DoacaoView {
      * Exibe mensagens de erro
      */
     public static void exibirMensagemErro(String mensagem) {
-        System.out.println("❌ " + mensagem);
+        System.out.println("Erro:  " + mensagem);
     }
 
     /**
@@ -311,7 +311,7 @@ public class DoacaoView {
      * Exibe mensagem de conexão bem-sucedida
      */
     public static void exibirConexaoSucesso() {
-        System.out.println("✅ CONECTADO AO BANCO via DatabaseConnection!");
-        System.out.println("🏗️  Padrão MVC: Model + View + Controller + DAO");
+        System.out.println(" CONECTADO AO BANCO via DatabaseConnection!");
+        System.out.println("  Padrão MVC: Model + View + Controller + DAO");
     }
 }

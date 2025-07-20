@@ -29,7 +29,7 @@ public class DoacaoController {
         } catch (SQLException e) {
             DoacaoView.exibirMensagemErro("Erro ao registrar doação: " + e.getMessage());
             if (e.getMessage().contains("violates foreign key constraint")) {
-                DoacaoView.exibirMensagemErro("💡 Dica: Verifique se triagem_id e doador_id existem!");
+                DoacaoView.exibirMensagemErro(" Verifique se triagem_id e doador_id existem!");
             }
             return null;
         }
