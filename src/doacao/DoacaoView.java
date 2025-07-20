@@ -129,7 +129,7 @@ public class DoacaoView {
 
         System.out.println("\n DOAÇÃO ENCONTRADA:");
         System.out.println("╔════════════════════════════════════╗");
-        System.out.println("║           DETALHES DOAÇÃO          ║");
+        System.out.println("║         DADOS DA DOAÇÃO            ║");
         System.out.println("╠════════════════════════════════════╣");
         System.out.println("║ ID: " + String.format("%-27d", doacao.getId()) + "║");
         System.out.println("║ Data: " + String.format("%-25s", doacao.getData()) + "║");
@@ -174,9 +174,9 @@ public class DoacaoView {
     public static void exibirEstatisticasDia(int total, double volumeTotal, Date data) {
         double media = total > 0 ? volumeTotal / total : 0;
 
-        System.out.println("\n ESTATÍSTICAS DO DIA:");
+        System.out.println("\n RELATÓRIO DIÁRIO:");
         System.out.println("╔═════════════════════════════════╗");
-        System.out.println("║       DADOS CALCULADOS          ║");
+        System.out.println("║       RESUMO DO DIA             ║");
         System.out.println("╠═════════════════════════════════╣");
         System.out.println("║ Data: " + String.format("%-23s", data) + "║");
         System.out.println("║ Total doações: " + String.format("%-14d", total) + "║");
@@ -269,7 +269,7 @@ public class DoacaoView {
         System.out.println("\n " + operacao.toUpperCase() + " COM SUCESSO!");
         if (doacao != null && doacao.getId() != null) {
             System.out.println("╔════════════════════════════════════╗");
-            System.out.println("║         CONFIRMAÇÃO BANCO          ║");
+            System.out.println("║         OPERAÇÃO REALIZADA         ║");
             System.out.println("╠════════════════════════════════════╣");
             System.out.println("║ ID: " + String.format("%-27d", doacao.getId()) + "║");
             System.out.println("║ Data: " + String.format("%-25s", doacao.getData()) + "║");
@@ -278,7 +278,7 @@ public class DoacaoView {
             System.out.println("║ Triagem: " + String.format("%-22d", doacao.getTriagemId()) + "║");
             System.out.println("║ Doador: " + String.format("%-23d", doacao.getDoadorId()) + "║");
             System.out.println("╚════════════════════════════════════╝");
-            System.out.println(" Operação via DatabaseConnection + PostgreSQL");
+            System.out.println("Operação realizada com sucesso");
         }
     }
 
@@ -302,8 +302,8 @@ public class DoacaoView {
      */
     public static void exibirCabecalho() {
         System.out.println("╔══════════════════════════════════════╗");
-        System.out.println("║    HEMOCONNECT - SISTEMA DOAÇÕES    ║");
-        System.out.println("║          PADRÃO MVC + DAO            ║");
+        System.out.println("║         HEMOCONNECT v2.1             ║");
+        System.out.println("║             Doações      ║");
         System.out.println("╚══════════════════════════════════════╝");
     }
 
@@ -311,7 +311,7 @@ public class DoacaoView {
      * Exibe mensagem de conexão bem-sucedida
      */
     public static void exibirConexaoSucesso() {
-        System.out.println(" CONECTADO AO BANCO via DatabaseConnection!");
-        System.out.println("  Padrão MVC: Model + View + Controller + DAO");
+        System.out.println("Conectado ao banco de dados PostgreSQL");
+        System.out.println("Sistema inicializado com sucesso");
     }
 }
