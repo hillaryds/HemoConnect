@@ -1,4 +1,4 @@
-package src.triagem;
+package triagem;
 
 import java.sql.Date;
 import java.util.Scanner;
@@ -295,7 +295,7 @@ public class SistemaTriagemMenu {
      */
     private static boolean verificarConexaoBanco() {
         try {
-            src.database.DatabaseConnection.getConnection();
+            database.DatabaseConnection.getConnection();
             return true;
         } catch (Exception e) {
             return false;
