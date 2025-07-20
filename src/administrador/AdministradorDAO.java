@@ -1,6 +1,6 @@
 package administrador;
 
-import src.database.DatabaseConnection;
+import database.DatabaseConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,22 +13,22 @@ public class AdministradorDAO {
     
     // Queries SQL preparadas
     private static final String INSERT_ADMINISTRADOR = 
-        "INSERT INTO administrador (cargo_hospital, nome_administrador, login, senha) VALUES (?, ?, ?, ?)";
+        "INSERT INTO administrador (cargo_hospital, nome_administrador, login, senha, id_hospital) VALUES (?, ?, ?, ?, ?)";
     
     private static final String SELECT_ALL_ADMINISTRADORES = 
-        "SELECT id, cargo_hospital, nome_administrador, login, senha FROM administrador ORDER BY nome_administrador";
+        "SELECT id, cargo_hospital, nome_administrador, login, senha, id_hospital FROM administrador ORDER BY nome_administrador";
     
     private static final String SELECT_ADMINISTRADOR_BY_ID = 
-        "SELECT id, cargo_hospital, nome_administrador, login, senha FROM administrador WHERE id = ?";
+        "SELECT id, cargo_hospital, nome_administrador, login, senha, id_hospital FROM administrador WHERE id = ?";
     
     private static final String SELECT_ADMINISTRADOR_BY_LOGIN = 
-        "SELECT id, cargo_hospital, nome_administrador, login, senha FROM administrador WHERE login = ?";
+        "SELECT id, cargo_hospital, nome_administrador, login, senha, id_hospital FROM administrador WHERE login = ?";
     
     private static final String SELECT_ADMINISTRADOR_BY_LOGIN_SENHA = 
-        "SELECT id, cargo_hospital, nome_administrador, login, senha FROM administrador WHERE login = ? AND senha = ?";
+        "SELECT id, cargo_hospital, nome_administrador, login, senha, id_hospital FROM administrador WHERE login = ? AND senha = ?";
     
     private static final String UPDATE_ADMINISTRADOR = 
-        "UPDATE administrador SET cargo_hospital = ?, nome_administrador = ?, login = ?, senha = ? WHERE id = ?";
+        "UPDATE administrador SET cargo_hospital = ?, nome_administrador = ?, login = ?, senha = ?, id_hospital = ? WHERE id = ?";
     
     private static final String DELETE_ADMINISTRADOR = 
         "DELETE FROM administrador WHERE id = ?";
@@ -38,6 +38,9 @@ public class AdministradorDAO {
     
     private static final String CHECK_LOGIN_EXISTS = 
         "SELECT COUNT(*) FROM administrador WHERE login = ? AND id != ?";
+    
+    private static final String SELECT_ADMINISTRADORES_BY_HOSPITAL = 
+        "SELECT id, cargo_hospital, nome_administrador, login, senha, id_hospital FROM administrador WHERE id_hospital = ? ORDER BY nome_administrador";
 
     /**
      * Insere um novo administrador no banco de dados
@@ -53,6 +56,7 @@ public class AdministradorDAO {
             stmt.setString(2, administrador.getNomeAdministrador());
             stmt.setString(3, administrador.getLogin());
             stmt.setString(4, administrador.getSenha());
+            stmt.setLong(5, administrador.getIdHospital());
             
             int rowsAffected = stmt.executeUpdate();
             
@@ -87,50 +91,6 @@ public class AdministradorDAO {
         }
         
         return administradores;
-    }
-    
-    /**
-     * Busca administrador por ID
-     * @param id ID do administrador
-     * @return Administrador encontrado ou null se não existir
-     * @throws SQLException se houver erro na consulta
-     */
-    public static Administrador buscarPorId(Long id) throws SQLException {
-        Connection conn = DatabaseConnection.getConnection();
-        
-        try (PreparedStatement stmt = conn.prepareStatement(SELECT_ADMINISTRADOR_BY_ID)) {
-            stmt.setLong(1, id);
-            
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToAdministrador(rs);
-                }
-            }
-        }
-        
-        return null;
-    }
-    
-    /**
-     * Busca administrador por login
-     * @param login Login do administrador
-     * @return Administrador encontrado ou null se não existir
-     * @throws SQLException se houver erro na consulta
-     */
-    public static Administrador buscarPorLogin(String login) throws SQLException {
-        Connection conn = DatabaseConnection.getConnection();
-        
-        try (PreparedStatement stmt = conn.prepareStatement(SELECT_ADMINISTRADOR_BY_LOGIN)) {
-            stmt.setString(1, login);
-            
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToAdministrador(rs);
-                }
-            }
-        }
-        
-        return null;
     }
     
     /**
@@ -182,26 +142,6 @@ public class AdministradorDAO {
     }
     
     /**
-     * Atualiza um administrador existente
-     * @param administrador Administrador com dados atualizados
-     * @return true se atualização foi bem-sucedida, false caso contrário
-     * @throws SQLException se houver erro na atualização
-     */
-    public static boolean atualizar(Administrador administrador) throws SQLException {
-        Connection conn = DatabaseConnection.getConnection();
-        
-        try (PreparedStatement stmt = conn.prepareStatement(UPDATE_ADMINISTRADOR)) {
-            stmt.setString(1, administrador.getCargoHospital());
-            stmt.setString(2, administrador.getNomeAdministrador());
-            stmt.setString(3, administrador.getLogin());
-            stmt.setString(4, administrador.getSenha());
-            stmt.setLong(5, administrador.getId());
-            
-            return stmt.executeUpdate() > 0;
-        }
-    }
-    
-    /**
      * Remove um administrador pelo ID
      * @param id ID do administrador a ser removido
      * @return true se remoção foi bem-sucedida, false caso contrário
@@ -245,7 +185,8 @@ public class AdministradorDAO {
             rs.getString("cargo_hospital"),
             rs.getString("nome_administrador"),
             rs.getString("login"),
-            rs.getString("senha")
+            rs.getString("senha"),
+            rs.getLong("id_hospital")
         );
     }
 }

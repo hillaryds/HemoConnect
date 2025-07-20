@@ -1,4 +1,4 @@
-package src.triagem;
+package triagem;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -237,6 +237,57 @@ public class TriagemControllerDB {
     }
     
     // Métodos auxiliares para obter dados específicos
+    
+    /**
+     * Exibe total de triagens do dia
+     */
+    public static void totalDeTriagemDia() {
+        try {
+            Date hoje = new Date(System.currentTimeMillis());
+            List<Triagem> triagensHoje = TriagemDAO.buscarPorData(hoje);
+            
+            int total = triagensHoje.size();
+            int aprovadas = (int) triagensHoje.stream().filter(Triagem::isStatus).count();
+            int reprovadas = total - aprovadas;
+            
+            System.out.println("TOTAL DE TRIAGENS DO DIA - " + hoje);
+            System.out.println("Total: " + total + " triagens");
+            System.out.println("Aprovadas: " + aprovadas + " (" + String.format("%.1f", (aprovadas * 100.0 / Math.max(total, 1))) + "%)");
+            System.out.println("Reprovadas: " + reprovadas + " (" + String.format("%.1f", (reprovadas * 100.0 / Math.max(total, 1))) + "%)");
+            
+        } catch (SQLException e) {
+            System.err.println("Erro ao calcular total de triagens do dia: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Exibe total de triagens do mês
+     */
+    public static void totalDeTriagemMes() {
+        try {
+            Calendar cal = Calendar.getInstance();
+            int mesAtual = cal.get(Calendar.MONTH) + 1;
+            int anoAtual = cal.get(Calendar.YEAR);
+            
+            List<Triagem> triagensDoMes = TriagemDAO.buscarPorMes(mesAtual, anoAtual);
+            
+            int total = triagensDoMes.size();
+            int aprovadas = (int) triagensDoMes.stream().filter(Triagem::isStatus).count();
+            int reprovadas = total - aprovadas;
+            
+            String[] nomesMeses = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+                                  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+            
+            System.out.println("TOTAL DE TRIAGENS DO MES - " + nomesMeses[mesAtual-1] + "/" + anoAtual);
+            System.out.println("Total: " + total + " triagens");
+            System.out.println("Aprovadas: " + aprovadas + " (" + String.format("%.1f", (aprovadas * 100.0 / Math.max(total, 1))) + "%)");
+            System.out.println("Reprovadas: " + reprovadas + " (" + String.format("%.1f", (reprovadas * 100.0 / Math.max(total, 1))) + "%)");
+            System.out.println("Media diaria: " + String.format("%.1f", total / 30.0) + " triagens/dia");
+            
+        } catch (SQLException e) {
+            System.err.println("Erro ao calcular total de triagens do mês: " + e.getMessage());
+        }
+    }
     
     /**
      * Obtém a data atual no formato SQL

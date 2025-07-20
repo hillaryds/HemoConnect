@@ -1,6 +1,6 @@
-package src.triagem;
+package triagem;
 
-import src.database.DatabaseConnection;
+import database.DatabaseConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
