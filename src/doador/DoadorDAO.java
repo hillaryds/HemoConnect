@@ -1,29 +1,34 @@
-import src.database.DatabaseConnection;
+package doador;
+
+import database.DatabaseConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DoadorDAO {
     private static final String INSERT_DOADOR = 
-        "INSERT INTO doador (nome, cpf, sexo, tipo_sanguineo, data_nascimento, telefone, bairro, nacionalidade, cidade) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO doador (nome, cpf, sexo, tipo_sanguineo, data_nascimento, telefone, bairro, nacionalidade, cidade, id_hospital) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     private static final String SELECT_ALL_DOADORES = 
-        "SELECT id, nome, cpf, sexo, tipo_sanguineo, data_nascimento, telefone, bairro, nacionalidade, cidade, ultima_doacao FROM doador ORDER BY nome";
+        "SELECT id, nome, cpf, sexo, tipo_sanguineo, data_nascimento, telefone, bairro, nacionalidade, cidade, ultima_doacao, id_hospital FROM doador ORDER BY nome";
     
     private static final String SELECT_DOADOR_BY_ID = 
-        "SELECT id, nome, cpf, sexo, tipo_sanguineo, data_nascimento, telefone, bairro, nacionalidade, cidade, ultima_doacao FROM doador WHERE id = ?";
+        "SELECT id, nome, cpf, sexo, tipo_sanguineo, data_nascimento, telefone, bairro, nacionalidade, cidade, ultima_doacao, id_hospital FROM doador WHERE id = ?";
     
     private static final String SELECT_DOADOR_BY_CPF = 
-        "SELECT id, nome, cpf, sexo, tipo_sanguineo, data_nascimento, telefone, bairro, nacionalidade, cidade, ultima_doacao FROM doador WHERE cpf = ?";
+        "SELECT id, nome, cpf, sexo, tipo_sanguineo, data_nascimento, telefone, bairro, nacionalidade, cidade, ultima_doacao, id_hospital FROM doador WHERE cpf = ?";
     
     private static final String SELECT_DOADORES_BY_TIPO_SANGUINEO = 
-        "SELECT id, nome, cpf, sexo, tipo_sanguineo, data_nascimento, telefone, bairro, nacionalidade, cidade, ultima_doacao FROM doador WHERE tipo_sanguineo = ? ORDER BY nome";
+        "SELECT id, nome, cpf, sexo, tipo_sanguineo, data_nascimento, telefone, bairro, nacionalidade, cidade, ultima_doacao, id_hospital FROM doador WHERE tipo_sanguineo = ? ORDER BY nome";
     
     private static final String SELECT_DOADORES_BY_CIDADE = 
-        "SELECT id, nome, cpf, sexo, tipo_sanguineo, data_nascimento, telefone, bairro, nacionalidade, cidade, ultima_doacao FROM doador WHERE cidade ILIKE ? ORDER BY nome";
+        "SELECT id, nome, cpf, sexo, tipo_sanguineo, data_nascimento, telefone, bairro, nacionalidade, cidade, ultima_doacao, id_hospital FROM doador WHERE cidade ILIKE ? ORDER BY nome";
+    
+    private static final String SELECT_DOADORES_BY_HOSPITAL = 
+        "SELECT id, nome, cpf, sexo, tipo_sanguineo, data_nascimento, telefone, bairro, nacionalidade, cidade, ultima_doacao, id_hospital FROM doador WHERE id_hospital = ? ORDER BY nome";
     
     private static final String UPDATE_DOADOR = 
-        "UPDATE doador SET nome = ?, cpf = ?, sexo = ?, tipo_sanguineo = ?, data_nascimento = ?, telefone = ?, bairro = ?, nacionalidade = ?, cidade = ? WHERE id = ?";
+        "UPDATE doador SET nome = ?, cpf = ?, sexo = ?, tipo_sanguineo = ?, data_nascimento = ?, telefone = ?, bairro = ?, nacionalidade = ?, cidade = ?, id_hospital = ? WHERE id = ?";
     
     private static final String UPDATE_ULTIMA_DOACAO = 
         "UPDATE doador SET ultima_doacao = ? WHERE id = ?";
@@ -56,6 +61,7 @@ public class DoadorDAO {
             stmt.setString(7, doador.getBairro());
             stmt.setString(8, doador.getNacionalidade());
             stmt.setString(9, doador.getCidade());
+            stmt.setLong(10, doador.getIdHospital());
             
             int rowsAffected = stmt.executeUpdate();
             
@@ -183,6 +189,29 @@ public class DoadorDAO {
     }
     
     /**
+     * Busca doadores por hospital
+     * @param idHospital ID do hospital
+     * @return Lista de doadores do hospital
+     * @throws SQLException se houver erro na consulta
+     */
+    public static List<Doador> buscarPorHospital(Long idHospital) throws SQLException {
+        Connection conn = DatabaseConnection.getConnection();
+        List<Doador> doadores = new ArrayList<>();
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SELECT_DOADORES_BY_HOSPITAL)) {
+            stmt.setLong(1, idHospital);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    doadores.add(mapResultSetToDoador(rs));
+                }
+            }
+        }
+        
+        return doadores;
+    }
+    
+    /**
      * Verifica se um CPF já existe no banco
      * @param cpf CPF a ser verificado
      * @param excludeId ID a ser excluído da verificação (útil para updates)
@@ -225,7 +254,8 @@ public class DoadorDAO {
             stmt.setString(7, doador.getBairro());
             stmt.setString(8, doador.getNacionalidade());
             stmt.setString(9, doador.getCidade());
-            stmt.setLong(10, doador.getId());
+            stmt.setLong(10, doador.getIdHospital());
+            stmt.setLong(11, doador.getId());
             
             return stmt.executeUpdate() > 0;
         }
@@ -299,7 +329,8 @@ public class DoadorDAO {
             rs.getString("bairro"),
             rs.getString("nacionalidade"),
             rs.getString("cidade"),
-            rs.getDate("ultima_doacao")
+            rs.getDate("ultima_doacao"),
+            rs.getLong("id_hospital")
         );
     }
 }
