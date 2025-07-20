@@ -237,4 +237,38 @@ public class HospitalController {
         
         return true;
     }
+    
+    /**
+     * Consulta doadores vinculados a um hospital específico
+     * @param hospital Hospital para consultar os doadores
+     * @return Lista de doadores vinculados ao hospital
+     */
+    public static List<doador.Doador> consultarDoadoresVinculados(Hospital hospital) {
+        if (hospital == null) {
+            System.err.println("Hospital não pode ser nulo");
+            return new ArrayList<>();
+        }
+        
+        return hospital.consultarDoadoresVinculados();
+    }
+    
+    /**
+     * Consulta doadores vinculados a um hospital por ID
+     * @param idHospital ID do hospital
+     * @return Lista de doadores vinculados ao hospital
+     */
+    public static List<doador.Doador> consultarDoadoresVinculadosPorId(Long idHospital) {
+        try {
+            Hospital hospital = HospitalDAO.buscarPorId(idHospital);
+            if (hospital == null) {
+                System.err.println("Hospital não encontrado");
+                return new ArrayList<>();
+            }
+            
+            return hospital.consultarDoadoresVinculados();
+        } catch (SQLException e) {
+            System.err.println("Erro ao consultar doadores vinculados: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
 }

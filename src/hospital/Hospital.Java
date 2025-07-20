@@ -1,10 +1,16 @@
 package hospital;
 
+import doador.Doador;
+import doador.DoadorController;
+import java.util.List;
+import java.util.ArrayList;
+
 public class Hospital {
     private Long id; 
     private String nome;
     private String cep;
     private String cidade;
+    private List<Doador> doadores;
 
     // Para objetos vindos do banco
     public Hospital(Long id, String nome, String cep, String cidade) {
@@ -12,12 +18,14 @@ public class Hospital {
         this.nome = nome;
         this.cep = cep;
         this.cidade = cidade;
+        this.doadores = new ArrayList<>();
     }
 
     public Hospital(String nome, String cep, String cidade) {
         this.nome = nome;
         this.cep = cep;
         this.cidade = cidade;
+        this.doadores = new ArrayList<>();
     }
 
   
@@ -53,6 +61,14 @@ public class Hospital {
         this.cidade = cidade;
     }
 
+    public List<Doador> getDoadores() {
+        return doadores;
+    }
+
+    public void setDoadores(List<Doador> doadores) {
+        this.doadores = doadores != null ? doadores : new ArrayList<>();
+    }
+
     public String getNomeDoHospital() {
         return nome;
     }
@@ -67,6 +83,20 @@ public class Hospital {
 
     public void setCodigo(int codigo) {
         this.id = (long) codigo;
+    }
+
+    /**
+     * Consulta todos os doadores vinculados a este hospital
+     * @return Lista de doadores vinculados ao hospital
+     */
+    public List<Doador> consultarDoadoresVinculados() {
+        if (this.id == null) {
+            return new ArrayList<>();
+        }
+        
+        List<Doador> doadoresVinculados = DoadorController.listarDoadoresPorHospital(this.id);
+        this.doadores = doadoresVinculados; 
+        return doadoresVinculados;
     }
 
     /**
