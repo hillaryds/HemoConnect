@@ -11,10 +11,11 @@ public class AdministradorController {
      * @param nome Nome do administrador
      * @param login Login do administrador
      * @param senha Senha do administrador
+     * @param idHospital ID do hospital ao qual o administrador será associado
      * @return Administrador criado com ID gerado pelo banco ou null se houve erro
      */
-    public static Administrador criarAdministrador(String nome, String login, String senha) {
-        return criarAdministrador("Administrador", nome, login, senha);
+    public static Administrador criarAdministrador(String nome, String login, String senha, Long idHospital) {
+        return criarAdministrador("Administrador", nome, login, senha, idHospital);
     }
     
     /**
@@ -23,11 +24,12 @@ public class AdministradorController {
      * @param nome Nome do administrador
      * @param login Login do administrador
      * @param senha Senha do administrador
+     * @param idHospital ID do hospital ao qual o administrador será associado
      * @return Administrador criado com ID gerado pelo banco ou null se houve erro
      */
-    public static Administrador criarAdministrador(String cargo, String nome, String login, String senha) {
+    public static Administrador criarAdministrador(String cargo, String nome, String login, String senha, Long idHospital) {
         try {
-            if (!validarDadosEntrada(nome, login, senha)) {
+            if (!validarDadosEntrada(nome, login, senha, idHospital)) {
                 return null;
             }
             
@@ -36,7 +38,7 @@ public class AdministradorController {
                 return null;
             }
             
-            Administrador administrador = new Administrador(cargo, nome, login, senha);
+            Administrador administrador = new Administrador(cargo, nome, login, senha, idHospital);
             
            
             if (!administrador.validarDados()) {
@@ -58,9 +60,10 @@ public class AdministradorController {
      * @param nome Nome do administrador
      * @param login Login do administrador
      * @param senha Senha do administrador
+     * @param idHospital ID do hospital ao qual o administrador será associado
      */
-    public static void criarAdministradorComMensagem(String nome, String login, String senha) {
-        criarAdministradorComMensagem("Administrador", nome, login, senha);
+    public static void criarAdministradorComMensagem(String nome, String login, String senha, Long idHospital) {
+        criarAdministradorComMensagem("Administrador", nome, login, senha, idHospital);
     }
     
     /**
@@ -69,9 +72,10 @@ public class AdministradorController {
      * @param nome Nome do administrador
      * @param login Login do administrador
      * @param senha Senha do administrador
+     * @param idHospital ID do hospital ao qual o administrador será associado
      */
-    public static void criarAdministradorComMensagem(String cargo, String nome, String login, String senha) {
-        Administrador administrador = criarAdministrador(cargo, nome, login, senha);
+    public static void criarAdministradorComMensagem(String cargo, String nome, String login, String senha, Long idHospital) {
+        Administrador administrador = criarAdministrador(cargo, nome, login, senha, idHospital);
         
         if (administrador != null) {
             AdministradorView.exibirMensagemAdministradorCriado(administrador);
@@ -100,34 +104,6 @@ public class AdministradorController {
         } catch (SQLException e) {
             System.err.println("Erro ao buscar administradores: " + e.getMessage());
             AdministradorView.exibirMensagemErro("Erro ao buscar administradores: " + e.getMessage());
-        }
-    }
-    
-    /**
-     * Busca administrador por ID
-     * @param id ID do administrador
-     * @return Administrador encontrado ou null se não existir
-     */
-    public static Administrador buscarAdministradorPorId(Long id) {
-        try {
-            return AdministradorDAO.buscarPorId(id);
-        } catch (SQLException e) {
-            System.err.println("Erro ao buscar administrador por ID: " + e.getMessage());
-            return null;
-        }
-    }
-    
-    /**
-     * Busca administrador por login
-     * @param login Login do administrador
-     * @return Administrador encontrado ou null se não existir
-     */
-    public static Administrador buscarAdministradorPorLogin(String login) {
-        try {
-            return AdministradorDAO.buscarPorLogin(login);
-        } catch (SQLException e) {
-            System.err.println("Erro ao buscar administrador por login: " + e.getMessage());
-            return null;
         }
     }
     
@@ -166,34 +142,6 @@ public class AdministradorController {
         }
     }
     
-    /**
-     * Atualiza dados de um administrador
-     * @param administrador Administrador com dados atualizados
-     * @return true se atualização foi bem-sucedida, false caso contrário
-     */
-    public static boolean atualizarAdministrador(Administrador administrador) {
-        try {
-            if (administrador.getId() == null) {
-                return false;
-            }
-            
-            if (!administrador.validarDados()) {
-                System.err.println("Dados do administrador inválidos");
-                return false;
-            }
-            
-            if (AdministradorDAO.loginExiste(administrador.getLogin(), administrador.getId())) {
-                System.err.println("Login já existe no sistema");
-                return false;
-            }
-            
-            return AdministradorDAO.atualizar(administrador);
-            
-        } catch (SQLException e) {
-            System.err.println("Erro ao atualizar administrador: " + e.getMessage());
-            return false;
-        }
-    }
     
     /**
      * Remove um administrador pelo ID
@@ -255,9 +203,10 @@ public class AdministradorController {
      * @param nome Nome do administrador
      * @param login Login do administrador
      * @param senha Senha do administrador
+     * @param idHospital ID do hospital
      * @return true se válidos, false caso contrário
      */
-    private static boolean validarDadosEntrada(String nome, String login, String senha) {
+    private static boolean validarDadosEntrada(String nome, String login, String senha, Long idHospital) {
         if (nome == null || nome.trim().isEmpty()) {
             System.err.println("Nome não pode ser vazio");
             return false;
@@ -270,6 +219,11 @@ public class AdministradorController {
         
         if (!Administrador.validarSenha(senha)) {
             System.err.println("Senha deve ter pelo menos 4 caracteres");
+            return false;
+        }
+        
+        if (!Administrador.validarIdHospital(idHospital)) {
+            System.err.println("ID do hospital deve ser válido");
             return false;
         }
         

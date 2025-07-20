@@ -17,6 +17,7 @@ public class AdministradorView {
         System.out.println("Nome: " + administrador.getNomeAdministrador());
         System.out.println("Login: " + administrador.getLogin());
         System.out.println("Cargo: " + administrador.getCargoHospital());
+        System.out.println("ID Hospital: " + administrador.getIdHospital());
         System.out.println("=============================");
     }
     
@@ -32,23 +33,24 @@ public class AdministradorView {
         
         System.out.println("=== LISTA DE ADMINISTRADORES ===");
         System.out.println("Total: " + administradores.size() + " administradores");
-        System.out.println(String.format("|%-5s | %-20s | %-30s | %-20s|", "ID", "Cargo", "Nome", "Login"));
-        System.out.println(String.format("|%s|%s|%s|%s|", 
-            "-".repeat(6), "-".repeat(21), "-".repeat(31), "-".repeat(21)));
+        System.out.println(String.format("|%-5s | %-20s | %-30s | %-20s | %-12s|", "ID", "Cargo", "Nome", "Login", "ID Hospital"));
+        System.out.println(String.format("|%s|%s|%s|%s|%s|", 
+            "-".repeat(6), "-".repeat(21), "-".repeat(31), "-".repeat(21), "-".repeat(13)));
         
         for (Administrador adm : administradores) {
-            System.out.println(String.format("|%-5s | %-20s | %-30s | %-20s|", 
+            System.out.println(String.format("|%-5s | %-20s | %-30s | %-20s | %-12s|", 
                 adm.getId() != null ? adm.getId() : "N/A",
                 adm.getCargoHospital(),
                 adm.getNomeAdministrador(),
-                adm.getLogin()));
+                adm.getLogin(),
+                adm.getIdHospital()));
         }
         
         System.out.println("===============================");
     }
     
     /**
-     * Exibe lista de administradores de forma compatível com código anterior
+     * Exibe lista de administradores
      * @param administradores Lista de administradores
      */
     public static void exibirListaAdministradoresSimples(List<Administrador> administradores) {
@@ -77,6 +79,7 @@ public class AdministradorView {
         System.out.println("Nome: " + administrador.getNomeAdministrador());
         System.out.println("Login: " + administrador.getLogin());
         System.out.println("Cargo: " + administrador.getCargoHospital());
+        System.out.println("ID Hospital: " + administrador.getIdHospital());
         System.out.println("======================================");
     }
     
@@ -143,7 +146,7 @@ public class AdministradorView {
     
     /**
      * Solicita dados para criar um novo administrador
-     * @return Array com [nome, login, senha] ou null se cancelado
+     * @return Array com [nome, login, senha, idHospital] ou null se cancelado
      */
     public static String[] solicitarDadosNovoAdministrador() {
         System.out.println("=== CRIAR NOVO ADMINISTRADOR ===");
@@ -169,8 +172,15 @@ public class AdministradorView {
             return null;
         }
         
+        System.out.print("ID do Hospital: ");
+        String idHospitalStr = scanner.nextLine();
+        if (idHospitalStr.trim().isEmpty()) {
+            System.out.println("ID do Hospital não pode ser vazio.");
+            return null;
+        }
+        
         System.out.println("===============================");
-        return new String[]{nome, login, senha};
+        return new String[]{nome, login, senha, idHospitalStr};
     }
     
     /**
@@ -208,16 +218,5 @@ public class AdministradorView {
         System.out.println("0. Sair");
         System.out.println("============================");
         System.out.print("Escolha uma opção: ");
-    }
-    
-    /**
-     * Solicita confirmação do usuário
-     * @param mensagem Mensagem de confirmação
-     * @return true se confirmado, false caso contrário
-     */
-    public static boolean solicitarConfirmacao(String mensagem) {
-        System.out.print(mensagem + " (s/n): ");
-        String resposta = scanner.nextLine();
-        return resposta.toLowerCase().startsWith("s");
     }
 }

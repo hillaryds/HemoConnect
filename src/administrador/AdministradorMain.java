@@ -105,8 +105,14 @@ public class AdministradorMain {
             String nome = dados[0];
             String login = dados[1];
             String senha = dados[2];
+            String idHospitalStr = dados[3];
             
-            AdministradorController.criarAdministradorComMensagem(nome, login, senha);
+            try {
+                Long idHospital = Long.parseLong(idHospitalStr);
+                AdministradorController.criarAdministradorComMensagem(nome, login, senha, idHospital);
+            } catch (NumberFormatException e) {
+                System.out.println("ID do Hospital deve ser um número válido.");
+            }
         }
     }
     

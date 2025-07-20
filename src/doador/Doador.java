@@ -14,11 +14,12 @@ public class Doador {
     private String nacionalidade;
     private String cidade;
     private Date ultimaDoacao;
+    private Long idHospital; // Novo atributo para relacionamento
 
     // Construtor com ID (para objetos vindos do banco)
     public Doador(Long id, String nome, Long cpf, String sexo, String tipoSanguineo, 
                   Date dataNascimento, Long telefone, String bairro, String nacionalidade, 
-                  String cidade, Date ultimaDoacao) {
+                  String cidade, Date ultimaDoacao, Long idHospital) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
@@ -30,12 +31,13 @@ public class Doador {
         this.nacionalidade = nacionalidade;
         this.cidade = cidade;
         this.ultimaDoacao = ultimaDoacao;
+        this.idHospital = idHospital;
     }
 
     // Construtor sem ID
     public Doador(String nome, Long cpf, String sexo, String tipoSanguineo, 
                   Date dataNascimento, Long telefone, String bairro, String nacionalidade, 
-                  String cidade) {
+                  String cidade, Long idHospital) {
         this.nome = nome;
         this.cpf = cpf;
         this.sexo = sexo;
@@ -45,6 +47,7 @@ public class Doador {
         this.bairro = bairro;
         this.nacionalidade = nacionalidade;
         this.cidade = cidade;
+        this.idHospital = idHospital;
     }
 
     public Long getId() { return id; }
@@ -80,6 +83,9 @@ public class Doador {
     public Date getUltimaDoacao() { return ultimaDoacao; }
     public void setUltimaDoacao(Date ultimaDoacao) { this.ultimaDoacao = ultimaDoacao; }
 
+    public Long getIdHospital() { return idHospital; }
+    public void setIdHospital(Long idHospital) { this.idHospital = idHospital; }
+
     public boolean validarDados() {
         return nome != null && !nome.trim().isEmpty() &&
                cpf != null && cpf > 0 &&
@@ -89,7 +95,8 @@ public class Doador {
                telefone != null && telefone > 0 &&
                bairro != null && !bairro.trim().isEmpty() &&
                nacionalidade != null && !nacionalidade.trim().isEmpty() &&
-               cidade != null && !cidade.trim().isEmpty();
+               cidade != null && !cidade.trim().isEmpty() &&
+               idHospital != null && idHospital > 0;
     }
 
     public static boolean validarCpf(Long cpf) {
