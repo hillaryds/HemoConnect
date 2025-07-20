@@ -302,7 +302,7 @@ public class DoacaoView {
      */
     public static void exibirCabecalho() {
         System.out.println("╔══════════════════════════════════════╗");
-        System.out.println("║         HEMOCONNECT v2.1             ║");
+        System.out.println("║         HEMOCONNECT              ║");
         System.out.println("║             Doações      ║");
         System.out.println("╚══════════════════════════════════════╝");
     }
