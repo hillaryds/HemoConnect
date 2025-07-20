@@ -1,12 +1,14 @@
+package doador;
+
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
 
 public class DoadorController {
-    public static Doador criarDoador(String nome, Long cpf, String sexo, String tipoSanguineo, Date dataNascimento, Long telefone, String bairro, String nacionalidade, String cidade) {
+    public static Doador criarDoador(String nome, Long cpf, String sexo, String tipoSanguineo, Date dataNascimento, Long telefone, String bairro, String nacionalidade, String cidade, Long idHospital) {
         try {
-            if (!validarDadosEntrada(nome, cpf, sexo, tipoSanguineo, dataNascimento, telefone, bairro, nacionalidade, cidade)) {
+            if (!validarDadosEntrada(nome, cpf, sexo, tipoSanguineo, dataNascimento, telefone, bairro, nacionalidade, cidade, idHospital)) {
                 return null;
             }
             
@@ -15,7 +17,7 @@ public class DoadorController {
                 return null;
             }
             
-            Doador doador = new Doador(nome, cpf, sexo, tipoSanguineo, dataNascimento, telefone, bairro, nacionalidade, cidade);
+            Doador doador = new Doador(nome, cpf, sexo, tipoSanguineo, dataNascimento, telefone, bairro, nacionalidade, cidade, idHospital);
             
             if (!doador.validarDados()) {
                 System.err.println("Dados do doador inválidos");
@@ -30,8 +32,8 @@ public class DoadorController {
         }
     }
     
-    public static void criarDoadorComMensagem(String nome, Long cpf, String sexo, String tipoSanguineo, Date dataNascimento, Long telefone, String bairro, String nacionalidade, String cidade) {
-        Doador doador = criarDoador(nome, cpf, sexo, tipoSanguineo, dataNascimento, telefone, bairro, nacionalidade, cidade);
+    public static void criarDoadorComMensagem(String nome, Long cpf, String sexo, String tipoSanguineo, Date dataNascimento, Long telefone, String bairro, String nacionalidade, String cidade, Long idHospital) {
+        Doador doador = criarDoador(nome, cpf, sexo, tipoSanguineo, dataNascimento, telefone, bairro, nacionalidade, cidade, idHospital);
         
         if (doador != null) {
             DoadorView.exibirMensagemDoadorCriado(doador);
@@ -91,6 +93,15 @@ public class DoadorController {
             return DoadorDAO.buscarPorCidade(cidade);
         } catch (SQLException e) {
             System.err.println("Erro ao buscar doadores por cidade: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public static List<Doador> listarDoadoresPorHospital(Long idHospital) {
+        try {
+            return DoadorDAO.buscarPorHospital(idHospital);
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar doadores por hospital: " + e.getMessage());
             return new ArrayList<>();
         }
     }
@@ -195,7 +206,7 @@ public class DoadorController {
         }
     }
     
-    private static boolean validarDadosEntrada(String nome, Long cpf, String sexo, String tipoSanguineo, Date dataNascimento, Long telefone, String bairro, String nacionalidade, String cidade) {
+    private static boolean validarDadosEntrada(String nome, Long cpf, String sexo, String tipoSanguineo, Date dataNascimento, Long telefone, String bairro, String nacionalidade, String cidade, Long idHospital) {
         if (nome == null || nome.trim().isEmpty()) {
             System.err.println("Nome não pode ser vazio");
             return false;
@@ -238,6 +249,11 @@ public class DoadorController {
         
         if (cidade == null || cidade.trim().isEmpty()) {
             System.err.println("Cidade não pode ser vazia");
+            return false;
+        }
+        
+        if (idHospital == null || idHospital <= 0) {
+            System.err.println("ID do hospital inválido");
             return false;
         }
         

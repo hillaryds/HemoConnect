@@ -1,3 +1,5 @@
+package doador;
+
 import java.sql.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -32,6 +34,9 @@ public class DoadorMain {
                     listarPorCidade();
                     break;
                 case 6:
+                    listarPorHospital();
+                    break;
+                case 7:
                     removerDoador();
                     break;
                 case 0:
@@ -69,8 +74,9 @@ public class DoadorMain {
             String bairro = (String) dados[6];
             String nacionalidade = (String) dados[7];
             String cidade = (String) dados[8];
+            Long idHospital = (Long) dados[9];
             
-            DoadorController.criarDoadorComMensagem(nome, cpf, sexo, tipoSanguineo, dataNascimento, telefone, bairro, nacionalidade, cidade);
+            DoadorController.criarDoadorComMensagem(nome, cpf, sexo, tipoSanguineo, dataNascimento, telefone, bairro, nacionalidade, cidade, idHospital);
         }
     }
     
@@ -112,6 +118,25 @@ public class DoadorMain {
                 System.out.println("Doadores encontrados na cidade: " + cidade);
                 DoadorView.exibirListaDoadores(doadores);
             }
+        }
+    }
+    
+    private static void listarPorHospital() {
+        System.out.println("\n=== LISTAR POR HOSPITAL ===");
+        
+        System.out.print("Digite o ID do hospital: ");
+        try {
+            Long idHospital = Long.parseLong(scanner.nextLine());
+            List<Doador> doadores = DoadorController.listarDoadoresPorHospital(idHospital);
+            
+            if (doadores.isEmpty()) {
+                System.out.println("Nenhum doador encontrado para o hospital ID: " + idHospital);
+            } else {
+                System.out.println("Doadores encontrados para o hospital ID: " + idHospital);
+                DoadorView.exibirListaDoadores(doadores);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("ID do hospital inválido. Digite apenas números.");
         }
     }
     

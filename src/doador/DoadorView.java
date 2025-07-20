@@ -1,3 +1,5 @@
+package doador;
+
 import java.sql.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -18,6 +20,7 @@ public class DoadorView {
         System.out.println("Bairro: " + doador.getBairro());
         System.out.println("Nacionalidade: " + doador.getNacionalidade());
         System.out.println("Cidade: " + doador.getCidade());
+        System.out.println("ID Hospital: " + (doador.getIdHospital() != null ? doador.getIdHospital() : "N/A"));
         System.out.println("Última Doação: " + (doador.getUltimaDoacao() != null ? doador.getUltimaDoacao() : "Nunca doou"));
         System.out.println("Pode Doar: " + (doador.podeDoar() ? "SIM" : "NÃO"));
         System.out.println("======================");
@@ -31,19 +34,20 @@ public class DoadorView {
         
         System.out.println("=== LISTA DE DOADORES ===");
         System.out.println("Total: " + doadores.size() + " doadores");
-        System.out.println(String.format("|%-5s | %-30s | %-15s | %-5s | %-5s | %-25s|", 
-            "ID", "Nome", "CPF", "Tipo", "Idade", "Cidade"));
-        System.out.println(String.format("|%s|%s|%s|%s|%s|%s|", 
-            "-".repeat(6), "-".repeat(31), "-".repeat(16), "-".repeat(6), "-".repeat(6), "-".repeat(26)));
+        System.out.println(String.format("|%-5s | %-25s | %-12s | %-5s | %-5s | %-20s | %-8s|", 
+            "ID", "Nome", "CPF", "Tipo", "Idade", "Cidade", "Hospital"));
+        System.out.println(String.format("|%s|%s|%s|%s|%s|%s|%s|", 
+            "-".repeat(6), "-".repeat(26), "-".repeat(13), "-".repeat(6), "-".repeat(6), "-".repeat(21), "-".repeat(9)));
         
         for (Doador doador : doadores) {
-            System.out.println(String.format("|%-5s | %-30s | %-15s | %-5s | %-5s | %-25s|", 
+            System.out.println(String.format("|%-5s | %-25s | %-12s | %-5s | %-5s | %-20s | %-8s|", 
                 doador.getId() != null ? doador.getId() : "N/A",
-                doador.getNome().length() > 30 ? doador.getNome().substring(0, 27) + "..." : doador.getNome(),
+                doador.getNome().length() > 25 ? doador.getNome().substring(0, 22) + "..." : doador.getNome(),
                 doador.getCpf(),
                 doador.getTipoSanguineo(),
                 doador.calcularIdade(),
-                doador.getCidade().length() > 25 ? doador.getCidade().substring(0, 22) + "..." : doador.getCidade()));
+                doador.getCidade().length() > 20 ? doador.getCidade().substring(0, 17) + "..." : doador.getCidade(),
+                doador.getIdHospital() != null ? doador.getIdHospital() : "N/A"));
         }
         
         System.out.println("=========================");
@@ -183,9 +187,23 @@ public class DoadorView {
             return null;
         }
         
+        // Solicitar ID do Hospital
+        System.out.print("ID do Hospital (exemplo: 1, 2, 3...): ");
+        Long idHospital;
+        try {
+            idHospital = Long.parseLong(scanner.nextLine());
+            if (idHospital <= 0) {
+                System.out.println("ID do hospital deve ser maior que zero.");
+                return null;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("ID do hospital inválido. Digite apenas números.");
+            return null;
+        }
+        
         System.out.println("==========================");
         
-        return new Object[]{nome, cpf, sexo, tipoSanguineo, dataNascimento, telefone, bairro, nacionalidade, cidade};
+        return new Object[]{nome, cpf, sexo, tipoSanguineo, dataNascimento, telefone, bairro, nacionalidade, cidade, idHospital};
     }
     
     public static void exibirMenuDoador() {
@@ -195,7 +213,8 @@ public class DoadorView {
         System.out.println("3. Buscar doador por CPF");
         System.out.println("4. Listar por tipo sanguíneo");
         System.out.println("5. Listar por cidade");
-        System.out.println("6. Remover doador");
+        System.out.println("6. Listar doadores por hospital");
+        System.out.println("7. Remover doador");
         System.out.println("0. Sair");
         System.out.println("======================");
         System.out.print("Escolha uma opção: ");
@@ -219,5 +238,37 @@ public class DoadorView {
     public static String solicitarCidade() {
         System.out.print("Digite o nome da cidade: ");
         return scanner.nextLine().trim();
+    }
+    
+    public static Long solicitarIdHospital() {
+        System.out.print("Digite o ID do hospital: ");
+        try {
+            return Long.parseLong(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("ID inválido.");
+            return null;
+        }
+    }
+    
+    public static void exibirDoadoresPorHospital(Long idHospital, List<Doador> doadores) {
+        System.out.println("=== DOADORES DO HOSPITAL ID: " + idHospital + " ===");
+        
+        if (doadores.isEmpty()) {
+            System.out.println("Nenhum doador encontrado neste hospital.");
+        } else {
+            System.out.println("Total: " + doadores.size() + " doadores");
+            
+            int aptos = 0;
+            for (Doador doador : doadores) {
+                if (doador.podeDoar()) aptos++;
+            }
+            
+            System.out.println("Aptos para doação: " + aptos);
+            System.out.println();
+            
+            exibirListaDoadores(doadores);
+        }
+        
+        System.out.println("=======================================");
     }
 }
