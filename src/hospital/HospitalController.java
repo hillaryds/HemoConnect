@@ -180,6 +180,23 @@ public class HospitalController {
                 return false;
             }
             
+            // Verificar se existem doadores vinculados ao hospital
+            List<doador.Doador> doadoresVinculados = consultarDoadoresVinculadosPorId(id);
+            if (!doadoresVinculados.isEmpty()) {
+                System.err.println("Não é possível remover o hospital: existem " + 
+                                 doadoresVinculados.size() + " doador(es) vinculado(s) a este hospital");
+                return false;
+            }
+            
+            // Verificar se existem administradores vinculados ao hospital
+            List<administrador.Administrador> administradoresVinculados = 
+                administrador.AdministradorController.listarAdministradoresPorHospital(id);
+            if (!administradoresVinculados.isEmpty()) {
+                System.err.println("Não é possível remover o hospital: existem " + 
+                                 administradoresVinculados.size() + " administrador(es) vinculado(s) a este hospital");
+                return false;
+            }
+            
             return HospitalDAO.remover(id);
             
         } catch (SQLException e) {
@@ -196,6 +213,27 @@ public class HospitalController {
             Hospital hospital = buscarHospitalPorId(id);
             if (hospital != null) {
                 HospitalView.exibirHospital(hospital);
+                
+                // Verificar vínculos antes de solicitar confirmação
+                List<doador.Doador> doadoresVinculados = consultarDoadoresVinculadosPorId(id);
+                List<administrador.Administrador> administradoresVinculados = 
+                    administrador.AdministradorController.listarAdministradoresPorHospital(id);
+                
+                if (!doadoresVinculados.isEmpty() || !administradoresVinculados.isEmpty()) {
+                    StringBuilder mensagemVinculos = new StringBuilder("Não é possível remover este hospital pois existem:");
+                    
+                    if (!doadoresVinculados.isEmpty()) {
+                        mensagemVinculos.append("\n- ").append(doadoresVinculados.size()).append(" doador(es) vinculado(s)");
+                    }
+                    
+                    if (!administradoresVinculados.isEmpty()) {
+                        mensagemVinculos.append("\n- ").append(administradoresVinculados.size()).append(" administrador(es) vinculado(s)");
+                    }
+                    
+                    mensagemVinculos.append("\n\nRemova primeiro os vínculos antes de excluir o hospital.");
+                    HospitalView.exibirMensagemErro(mensagemVinculos.toString());
+                    return;
+                }
                 
                 if (HospitalView.solicitarConfirmacao("Tem certeza que deseja remover este hospital?")) {
                     boolean sucesso = removerHospital(id);
