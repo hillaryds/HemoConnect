@@ -35,7 +35,7 @@ public class HospitalMain {
                     removerHospital();
                     break;
                 case 0:
-                    System.out.println("Saindo do sistema...");
+                    System.out.println("Retornando ao Menu Principal...");
                     break;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");

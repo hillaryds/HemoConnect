@@ -217,7 +217,7 @@ public class DoadorView {
         System.out.println("║ 5.  Listar por Cidade               ║");
         System.out.println("║ 6.  Listar Doadores por Hospital    ║");
         System.out.println("║ 7.  Remover Doador                  ║");
-        System.out.println("║ 0.  Sair                            ║");
+        System.out.println("║ 0.  Voltar ao Menu Principal        ║");
         System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: ");
     }

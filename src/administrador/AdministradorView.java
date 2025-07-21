@@ -217,7 +217,7 @@ public class AdministradorView {
         System.out.println("║ 2.  Criar Administrador             ║");
         System.out.println("║ 3.  Remover Administrador           ║");
         System.out.println("║ 4.  Fazer Login                     ║");
-        System.out.println("║ 0.  Sair                            ║");
+        System.out.println("║ 0.  Voltar ao Menu Principal        ║");
         System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: ");
     }

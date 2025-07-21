@@ -19,8 +19,6 @@ public class DoacaoMain {
      * Método utilizado pelo MainSystem para integração
      */
     public static void executarMenuPrincipal() {
-        // Exibe cabeçalho
-        DoacaoView.exibirCabecalho();
 
         // Testa conexão com banco
         if (!testarConexao()) {

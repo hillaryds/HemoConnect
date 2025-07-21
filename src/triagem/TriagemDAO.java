@@ -131,7 +131,7 @@ public class TriagemDAO {
      * Busca triagens por mês e ano
      */
     public static List<Triagem> buscarPorMes(int mes, int ano) throws SQLException {
-        String sql = "SELECT * FROM triagem WHERE EXTRACT(MONTH FROM data_triagem) = ? AND EXTRACT(YEAR FROM data_triagem) = ? ORDER BY data_triagem DESC";
+        String sql = "SELECT * FROM triagem WHERE EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ? ORDER BY data DESC";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -159,7 +159,7 @@ public class TriagemDAO {
         String sql = "SELECT COUNT(*) as total, " +
                     "SUM(CASE WHEN status = true THEN 1 ELSE 0 END) as aprovadas, " +
                     "SUM(CASE WHEN status = false THEN 1 ELSE 0 END) as reprovadas " +
-                    "FROM triagem WHERE data_triagem = ?";
+                    "FROM triagem WHERE data = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -191,7 +191,7 @@ public class TriagemDAO {
         String sql = "SELECT COUNT(*) as total, " +
                     "SUM(CASE WHEN status = true THEN 1 ELSE 0 END) as aprovadas, " +
                     "SUM(CASE WHEN status = false THEN 1 ELSE 0 END) as reprovadas " +
-                    "FROM triagem WHERE EXTRACT(MONTH FROM data_triagem) = ? AND EXTRACT(YEAR FROM data_triagem) = ?";
+                    "FROM triagem WHERE EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -236,7 +236,9 @@ public class TriagemDAO {
     }
     
     /**
-     * Remove uma triagem do banco
+     * Remove uma triagem e todas as doações associadas (CASCADE)
+     * ESTE É O MÉTODO RECOMENDADO PARA DELETAR TRIAGENS
+     * REGRA DE NEGÓCIO: Se uma triagem é deletada, suas doações dependentes também devem ser
      * @param id ID da triagem a ser removida
      * @return true se a remoção foi bem-sucedida
      * @throws SQLException se houver erro na remoção
@@ -244,11 +246,63 @@ public class TriagemDAO {
     public static boolean remover(Long id) throws SQLException {
         Connection conn = DatabaseConnection.getConnection();
         
-        try (PreparedStatement stmt = conn.prepareStatement(DELETE_TRIAGEM)) {
-            stmt.setLong(1, id);
+        try {
+            conn.setAutoCommit(false);
             
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            String countDoacoes = "SELECT COUNT(*) FROM doacao WHERE triagem_id = ?";
+            int totalDoacoes = 0;
+            
+            try (PreparedStatement countStmt = conn.prepareStatement(countDoacoes)) {
+                countStmt.setLong(1, id);
+                try (ResultSet rs = countStmt.executeQuery()) {
+                    if (rs.next()) {
+                        totalDoacoes = rs.getInt(1);
+                    }
+                }
+            }
+            
+            if (totalDoacoes > 0) {
+                String deleteDoacoes = "DELETE FROM doacao WHERE triagem_id = ?";
+                try (PreparedStatement stmtDoacoes = conn.prepareStatement(deleteDoacoes)) {
+                    stmtDoacoes.setLong(1, id);
+                    int doacoesDeletadas = stmtDoacoes.executeUpdate();
+                    System.out.println("Doações removidas em cascata: " + doacoesDeletadas + " de " + totalDoacoes);
+                }
+            }
+            
+            try (PreparedStatement stmtTriagem = conn.prepareStatement(DELETE_TRIAGEM)) {
+                stmtTriagem.setLong(1, id);
+                int triagensDeletadas = stmtTriagem.executeUpdate();
+                
+                if (triagensDeletadas > 0) {
+                    conn.commit(); // Confirmar transação
+                    if (totalDoacoes > 0) {
+                        System.out.println("Triagem ID " + id + " removida com " + totalDoacoes + " doação(ões) em cascata");
+                    } else {
+                        System.out.println("Triagem ID " + id + " removida (sem doações associadas)");
+                    }
+                    return true;
+                } else {
+                    conn.rollback(); // Reverter se triagem não foi encontrada
+                    System.out.println("Triagem ID " + id + " não encontrada para remoção");
+                    return false;
+                }
+            }
+            
+        } catch (SQLException e) {
+            try {
+                conn.rollback(); // Reverter em caso de erro
+                System.err.println("Erro ao remover triagem ID " + id + ": " + e.getMessage());
+            } catch (SQLException rollbackEx) {
+                System.err.println("Erro crítico no rollback: " + rollbackEx.getMessage());
+            }
+            throw e;
+        } finally {
+            try {
+                conn.setAutoCommit(true); // Restaurar auto-commit
+            } catch (SQLException e) {
+                System.err.println("Erro ao restaurar auto-commit: " + e.getMessage());
+            }
         }
     }
     

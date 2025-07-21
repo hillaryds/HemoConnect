@@ -13,7 +13,6 @@ import java.util.InputMismatchException;
 public class TriagemMain {
     
     private static Scanner scanner = new Scanner(System.in);
-    private static boolean sistemaAtivo = true;
     
     public static void main(String[] args) {
         executarMenuPrincipal();
@@ -24,7 +23,6 @@ public class TriagemMain {
      * Método utilizado pelo MainSystem para integração
      */
     public static void executarMenuPrincipal() {
-        System.out.println("Inicializando Sistema HemoConnect...");
         
         // Verificar conexão com banco de dados
         if (!verificarConexaoBanco()) {
@@ -33,30 +31,31 @@ public class TriagemMain {
             return;
         }
         
-        // Exibir cabeçalho do sistema
-        TriagemView.exibirCabecalho();
+        int opcao;
         
         // Loop principal do menu
-        while (sistemaAtivo) {
+        do {
             try {
                 TriagemView.exibirMenuPrincipal();
-                int opcao = lerInteiro();
+                opcao = lerInteiro();
                 
                 processarOpcaoMenu(opcao);
                 
             } catch (InputMismatchException e) {
                 System.err.println("Erro: Digite apenas números!");
                 scanner.nextLine(); // Limpar buffer
+                opcao = -1; 
             } catch (Exception e) {
                 System.err.println("Erro inesperado: " + e.getMessage());
                 e.printStackTrace();
+                opcao = -1; 
             }
-        }
+        } while (opcao != 0);
         
-        System.out.println("\nObrigado por usar o Sistema HemoConnect!");
-        System.out.println("Sistema encerrado.");
-        scanner.close();
+        System.out.println("\nSaindo do Módulo de Triagens...");
+        System.out.println("Retornando ao Menu Principal do Sistema.");
     }
+        
     
     /**
      * Processa a opção escolhida pelo usuário
@@ -91,14 +90,14 @@ public class TriagemMain {
                 exibirEstatisticas();
                 break;
             case 0:
-                sistemaAtivo = false;
+                System.out.println("\nRetornando ao Menu Principal...");
                 break;
             default:
                 System.err.println("Opção inválida! Tente novamente.");
                 break;
         }
         
-        if (sistemaAtivo && opcao != 0) {
+        if (opcao != 0 && opcao >= 1 && opcao <= 9) {
             pausarSistema();
         }
     }

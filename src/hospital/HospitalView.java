@@ -200,7 +200,7 @@ public class HospitalView {
         System.out.println("║ 3.  Buscar por Cidade               ║");
         System.out.println("║ 4.  Buscar por Nome                 ║");
         System.out.println("║ 5.  Remover Hospital                ║");
-        System.out.println("║ 0.  Sair                            ║");
+        System.out.println("║ 0.  Voltar ao Menu Principal        ║");
         System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: ");
     }
