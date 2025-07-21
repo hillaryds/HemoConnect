@@ -247,10 +247,8 @@ public class TriagemDAO {
         Connection conn = DatabaseConnection.getConnection();
         
         try {
-            // Iniciar transação para garantir consistência
             conn.setAutoCommit(false);
             
-            // 1. Primeiro, contar e deletar todas as doações vinculadas
             String countDoacoes = "SELECT COUNT(*) FROM doacao WHERE triagem_id = ?";
             int totalDoacoes = 0;
             
@@ -263,17 +261,15 @@ public class TriagemDAO {
                 }
             }
             
-            // 2. Deletar doações se existirem
             if (totalDoacoes > 0) {
                 String deleteDoacoes = "DELETE FROM doacao WHERE triagem_id = ?";
                 try (PreparedStatement stmtDoacoes = conn.prepareStatement(deleteDoacoes)) {
                     stmtDoacoes.setLong(1, id);
                     int doacoesDeletadas = stmtDoacoes.executeUpdate();
-                    System.out.println("📝 Doações removidas em cascata: " + doacoesDeletadas + " de " + totalDoacoes);
+                    System.out.println("Doações removidas em cascata: " + doacoesDeletadas + " de " + totalDoacoes);
                 }
             }
             
-            // 3. Deletar a triagem
             try (PreparedStatement stmtTriagem = conn.prepareStatement(DELETE_TRIAGEM)) {
                 stmtTriagem.setLong(1, id);
                 int triagensDeletadas = stmtTriagem.executeUpdate();
@@ -281,14 +277,14 @@ public class TriagemDAO {
                 if (triagensDeletadas > 0) {
                     conn.commit(); // Confirmar transação
                     if (totalDoacoes > 0) {
-                        System.out.println("✅ Triagem ID " + id + " removida com " + totalDoacoes + " doação(ões) em cascata");
+                        System.out.println("Triagem ID " + id + " removida com " + totalDoacoes + " doação(ões) em cascata");
                     } else {
-                        System.out.println("✅ Triagem ID " + id + " removida (sem doações associadas)");
+                        System.out.println("Triagem ID " + id + " removida (sem doações associadas)");
                     }
                     return true;
                 } else {
                     conn.rollback(); // Reverter se triagem não foi encontrada
-                    System.out.println("❌ Triagem ID " + id + " não encontrada para remoção");
+                    System.out.println("Triagem ID " + id + " não encontrada para remoção");
                     return false;
                 }
             }
@@ -296,16 +292,16 @@ public class TriagemDAO {
         } catch (SQLException e) {
             try {
                 conn.rollback(); // Reverter em caso de erro
-                System.err.println("❌ Erro ao remover triagem ID " + id + ": " + e.getMessage());
+                System.err.println("Erro ao remover triagem ID " + id + ": " + e.getMessage());
             } catch (SQLException rollbackEx) {
-                System.err.println("❌ Erro crítico no rollback: " + rollbackEx.getMessage());
+                System.err.println("Erro crítico no rollback: " + rollbackEx.getMessage());
             }
             throw e;
         } finally {
             try {
                 conn.setAutoCommit(true); // Restaurar auto-commit
             } catch (SQLException e) {
-                System.err.println("⚠️ Erro ao restaurar auto-commit: " + e.getMessage());
+                System.err.println("Erro ao restaurar auto-commit: " + e.getMessage());
             }
         }
     }

@@ -236,7 +236,7 @@ public class TriagemController {
      * MÉTODO SIMPLIFICADO: Agora sempre usa cascata automaticamente
      */
     public static void removerTriagemComMensagem(Triagem triagem) {
-        boolean sucesso = removerTriagem(triagem); // Método unificado com cascata
+        boolean sucesso = removerTriagem(triagem);
         TriagemView.exibirMensagemTriagemRemovida(sucesso);
     }
     

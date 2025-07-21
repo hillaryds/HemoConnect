@@ -12,19 +12,40 @@ import doador.Doador;
  */
 public class Doacao {
 
-    private Long id; // ID único da doação (chave primária no banco)
+    /** ID único da doação (chave primária no banco de dados) */
+    private Long id;
+    
+    /** Data da doação (deve ser do dia atual) */
     private Date data;
+    
+    /** Hora da doação no formato HH:MM:SS */
     private Time hora;
+    
+    /** Volume de sangue coletado em mililitros (350-500ml) */
     private double volume;
-    private Long triagemId; // Referência à triagem aprovada
-    private Long doadorId; // Referência ao doador
+    
+    /** ID da triagem aprovada associada à doação */
+    private Long triagemId;
+    
+    /** ID do doador que realizou a doação */
+    private Long doadorId;
 
-    // Objetos relacionados (para consultas)
+    // Objetos relacionados (para consultas e exibição)
+    /** Objeto Triagem associado (carregado quando necessário) */
     private Triagem triagem;
+    
+    /** Objeto Doador associado (carregado quando necessário) */
     private Doador doador;
 
     /**
-     * Construtor completo com ID (para objetos vindos do banco)
+     * Construtor completo com ID para doações vindas do banco de dados
+     * 
+     * @param id ID único da doação (chave primária)
+     * @param data Data da doação (deve ser do dia atual)
+     * @param hora Hora da doação no formato HH:MM:SS
+     * @param volume Volume coletado em ml (350-500ml)
+     * @param triagemId ID da triagem aprovada associada
+     * @param doadorId ID do doador que fez a doação
      */
     public Doacao(Long id, Date data, Time hora, double volume, Long triagemId, Long doadorId) {
         this.id = id;
@@ -36,7 +57,13 @@ public class Doacao {
     }
 
     /**
-     * Construtor sem ID (para novos objetos)
+     * Construtor sem ID para novas doações (antes de salvar no banco)
+     * 
+     * @param data Data da doação (deve ser do dia atual)
+     * @param hora Hora da doação no formato HH:MM:SS
+     * @param volume Volume coletado em ml (350-500ml)
+     * @param triagemId ID da triagem aprovada associada
+     * @param doadorId ID do doador que fez a doação
      */
     public Doacao(Date data, Time hora, double volume, Long triagemId, Long doadorId) {
         this.data = data;
@@ -47,7 +74,14 @@ public class Doacao {
     }
 
     /**
-     * Construtor com objetos relacionados (para facilitar uso)
+     * Construtor com objetos relacionados para facilitar o uso
+     * Automaticamente extrai os IDs dos objetos fornecidos
+     * 
+     * @param data Data da doação (deve ser do dia atual)
+     * @param hora Hora da doação no formato HH:MM:SS
+     * @param volume Volume coletado em ml (350-500ml)
+     * @param triagem Objeto Triagem aprovada associada
+     * @param doador Objeto Doador que fez a doação
      */
     public Doacao(Date data, Time hora, double volume, Triagem triagem, Doador doador) {
         this.data = data;
@@ -59,76 +93,128 @@ public class Doacao {
         this.doadorId = doador.getId();
     }
 
-    // Getters e Setters
+    
+    /**
+     * Obtém o ID único da doação
+     * @return ID da doação ou null se ainda não foi salva no banco
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Define o ID da doação (usado pelo DAO após inserção)
+     * @param id ID único da doação
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Obtém a data da doação
+     * @return Data da doação
+     */
     public Date getData() {
         return data;
     }
 
+    /**
+     * Obtém o horário da doação
+     * @return Hora da doação no formato HH:MM:SS
+     */
     public Time getHora() {
         return hora;
     }
 
+    /**
+     * Obtém o volume de sangue coletado
+     * @return Volume em mililitros
+     */
     public double getVolume() {
         return volume;
     }
 
+    /**
+     * Obtém o ID da triagem associada
+     * @return ID da triagem aprovada
+     */
     public Long getTriagemId() {
         return triagemId;
     }
 
+    /**
+     * Obtém o ID do doador
+     * @return ID do doador que fez a doação
+     */
     public Long getDoadorId() {
         return doadorId;
     }
 
+    /**
+     * Obtém o objeto Triagem associado
+     * @return Objeto Triagem ou null se não carregado
+     */
     public Triagem getTriagem() {
         return triagem;
     }
 
+    /**
+     * Obtém o objeto Doador associado
+     * @return Objeto Doador ou null se não carregado
+     */
     public Doador getDoador() {
         return doador;
     }
 
+    /**
+     * Define a triagem associada e atualiza o ID
+     * @param triagem Objeto Triagem aprovada
+     */
     public void setTriagem(Triagem triagem) {
         this.triagem = triagem;
         this.triagemId = triagem != null ? triagem.getId() : null;
     }
 
+    /**
+     * Define o doador associado e atualiza o ID
+     * @param doador Objeto Doador
+     */
     public void setDoador(Doador doador) {
         this.doador = doador;
         this.doadorId = doador != null ? doador.getId() : null;
     }
 
     /**
-     * Setter simples para data
+     * Define a data da doação
+     * @param data Data da doação (deve ser do dia atual)
      */
     public void setData(Date data) {
         this.data = data;
     }
 
     /**
-     * Setter simples para hora  
+     * Define o horário da doação  
+     * @param hora Hora no formato HH:MM:SS
      */
     public void setHora(Time hora) {
         this.hora = hora;
     }
 
     /**
-     * Setter simples para volume
+     * Define o volume de sangue coletado
+     * @param volume Volume em ml (deve estar entre 350-500ml)
      */
     public void setVolume(double volume) {
         this.volume = volume;
     }
 
     /**
-     * Valida se os dados básicos da doação são válidos
+     * Valida se os dados básicos da doação estão preenchidos
+     * 
+     * <p>Verifica se todos os campos obrigatórios possuem valores válidos,
+     * mas não valida as regras de negócio específicas.</p>
+     * 
+     * @return true se todos os campos obrigatórios estão preenchidos
      */
     public boolean validarDados() {
         return data != null && 
@@ -139,8 +225,9 @@ public class Doacao {
     }
 
     /**
-     * Validação estática de data
-     * REGRA: Doações só podem ser cadastradas no dia atual
+     * Validação estática de data com regra restritiva
+     * @param data Data a ser validada
+     * @return true apenas se a data for exatamente a data atual
      */
     public static boolean validarData(Date data) {
         if (data == null) return false;
@@ -153,7 +240,9 @@ public class Doacao {
     }
 
     /**
-     * Validação estática de hora
+     * Validação estática de hora após conversão SQL
+     * @param hora Objeto Time a ser validado
+     * @return true se a hora estiver no formato válido (00:00:00-23:59:59)
      */
     public static boolean validarHora(Time hora) {
         if (hora == null) return false;
@@ -178,8 +267,10 @@ public class Doacao {
     }
 
     /**
-     * Validação estática de string de hora (antes da conversão)
-     * Evita que Time.valueOf() faça correções automáticas
+     * Validação crítica de string de hora antes da conversão SQL
+     
+     * @param horaStr String no formato "HH:MM:SS" a ser validada
+     * @return true apenas se todos os componentes estão nos intervalos válidos
      */
     public static boolean validarStringHora(String horaStr) {
         if (horaStr == null || horaStr.trim().isEmpty()) return false;
@@ -203,14 +294,19 @@ public class Doacao {
     }
 
     /**
-     * Validação estática de volume
+     * Validação de volume de sangue coletado
+     * @param volume Volume em mililitros
+     * @return true se o volume estiver entre 350ml e 500ml (inclusive)
      */
     public static boolean validarVolume(double volume) {
         return volume >= 350.0 && volume <= 500.0;
     }
 
     /**
-     * Verifica se a doação pode ser realizada baseada na triagem
+     * Verifica se uma doação pode ser realizada com base no status da triagem
+     * @param triagem Objeto Triagem a ser verificado
+     * @return true se a triagem foi aprovada (status = true)
+     * @throws IllegalArgumentException se a triagem for null
      */
     public static boolean podeRealizar(Triagem triagem) {
         if (triagem == null) {
@@ -220,33 +316,39 @@ public class Doacao {
     }
 
     /**
-     * Calcula o tempo desde a última doação em dias
+     * Calcula quantos dias se passaram desde a última doação
+     * @param ultimaDoacao Data da última doação ou null se primeira doação
+     * @return Número de dias desde a última doação ou Long.MAX_VALUE se nunca doou
      */
     public static long diasDesdeUltimaDoacao(Date ultimaDoacao) {
         if (ultimaDoacao == null) {
-            return Long.MAX_VALUE;
+            return Long.MAX_VALUE; // Nunca doou antes
         }
         Date hoje = new Date(System.currentTimeMillis());
         return (hoje.getTime() - ultimaDoacao.getTime()) / (1000 * 60 * 60 * 24);
     }
 
     /**
-     * Verifica se o doador pode doar novamente (intervalo mínimo)
+     * Verifica se o doador pode realizar nova doação baseado no intervalo mínimo
+     * @param sexoDoador Sexo do doador ("M"/"MASCULINO" ou "F"/"FEMININO")
+     * @param ultimaDoacao Data da última doação ou null se primeira doação
+     * @return true se o intervalo mínimo foi respeitado
      */
     public static boolean podeDoarNovamente(String sexoDoador, Date ultimaDoacao) {
         long diasDesdeUltima = diasDesdeUltimaDoacao(ultimaDoacao);
 
         if ("M".equalsIgnoreCase(sexoDoador) || "MASCULINO".equalsIgnoreCase(sexoDoador)) {
-            return diasDesdeUltima >= 60;
+            return diasDesdeUltima >= 60; // Homens: 60 dias
         } else if ("F".equalsIgnoreCase(sexoDoador) || "FEMININO".equalsIgnoreCase(sexoDoador)) {
-            return diasDesdeUltima >= 90;
+            return diasDesdeUltima >= 90; // Mulheres: 90 dias
         }
 
-        return false;
+        return false; // Sexo não reconhecido
     }
 
     /**
-     * Retorna descrição completa da doação
+     * Gera uma descrição completa e formatada da doação
+     * @return String com descrição completa da doação
      */
     public String getDescricaoCompleta() {
         StringBuilder desc = new StringBuilder();

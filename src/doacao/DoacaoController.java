@@ -17,7 +17,11 @@ import doador.DoadorController;
 public class DoacaoController {
 
     /**
-     * Registra uma nova doação no sistema
+     * Registra uma nova doação no sistema com validação completa.
+     * @param doacao Objeto Doacao com dados validados
+     * @return Doacao persistida com ID gerado, ou null se validação falhar
+     * @throws SQLException se houver erro na persistência
+     * @see #validarDoacao(Doacao)
      */
     public static Doacao registrarDoacao(Doacao doacao) {
         try {
