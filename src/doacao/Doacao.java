@@ -28,9 +28,9 @@ public class Doacao {
      */
     public Doacao(Long id, Date data, Time hora, double volume, Long triagemId, Long doadorId) {
         this.id = id;
-        setData(data);
-        setHora(hora);
-        setVolume(volume);
+        this.data = data;
+        this.hora = hora;
+        this.volume = volume;
         this.triagemId = triagemId;
         this.doadorId = doadorId;
     }
@@ -39,9 +39,9 @@ public class Doacao {
      * Construtor sem ID (para novos objetos)
      */
     public Doacao(Date data, Time hora, double volume, Long triagemId, Long doadorId) {
-        setData(data);
-        setHora(hora);
-        setVolume(volume);
+        this.data = data;
+        this.hora = hora;
+        this.volume = volume;
         this.triagemId = triagemId;
         this.doadorId = doadorId;
     }
@@ -50,9 +50,9 @@ public class Doacao {
      * Construtor com objetos relacionados (para facilitar uso)
      */
     public Doacao(Date data, Time hora, double volume, Triagem triagem, Doador doador) {
-        setData(data);
-        setHora(hora);
-        setVolume(volume);
+        this.data = data;
+        this.hora = hora;
+        this.volume = volume;
         setTriagem(triagem);
         setDoador(doador);
         this.triagemId = triagem.getId();
@@ -107,43 +107,76 @@ public class Doacao {
     }
 
     /**
-     * Validação de data - não pode ser futura
+     * Setter simples para data
      */
-    private void setData(Date data) {
-        if (data == null) {
-            throw new IllegalArgumentException("Data não pode ser nula.");
-        }
-        Date hoje = new Date(System.currentTimeMillis());
-        if (data.after(hoje)) {
-            throw new IllegalArgumentException("Data da doação não pode ser futura.");
-        }
+    public void setData(Date data) {
         this.data = data;
     }
 
     /**
-     * Validação de hora - não pode ser nula
+     * Setter simples para hora  
      */
-    private void setHora(Time hora) {
-        if (hora == null) {
-            throw new IllegalArgumentException("Hora não pode ser nula.");
-        }
+    public void setHora(Time hora) {
         this.hora = hora;
     }
 
     /**
-     * Validação de volume - deve estar dentro dos limites permitidos
+     * Setter simples para volume
      */
-    private void setVolume(double volume) {
-        if (volume <= 0) {
-            throw new IllegalArgumentException("Volume deve ser maior que zero.");
-        }
-        if (volume > 500.0) { // Volume máximo típico para doação de sangue
-            throw new IllegalArgumentException("Volume excede o máximo permitido (500ml).");
-        }
-        if (volume < 350.0) { // Volume mínimo típico para doação de sangue
-            throw new IllegalArgumentException("Volume abaixo do mínimo recomendado (350ml).");
-        }
+    public void setVolume(double volume) {
         this.volume = volume;
+    }
+
+    /**
+     * Valida se os dados básicos da doação são válidos
+     */
+    public boolean validarDados() {
+        return data != null && 
+               hora != null && 
+               volume > 0 && 
+               triagemId != null && 
+               doadorId != null;
+    }
+
+    /**
+     * Validação estática de data
+     */
+    public static boolean validarData(Date data) {
+        if (data == null) return false;
+        Date hoje = new Date(System.currentTimeMillis());
+        return !data.before(hoje);
+    }
+
+    /**
+     * Validação estática de hora
+     */
+    public static boolean validarHora(Time hora) {
+        if (hora == null) return false;
+        
+        String horaStr = hora.toString();
+        String[] partes = horaStr.split(":");
+        
+        if (partes.length != 3) return false;
+        
+        try {
+            int horas = Integer.parseInt(partes[0]);
+            int minutos = Integer.parseInt(partes[1]);
+            int segundos = Integer.parseInt(partes[2]);
+            
+            return (horas >= 0 && horas <= 23) &&
+                   (minutos >= 0 && minutos <= 59) &&
+                   (segundos >= 0 && segundos <= 59);
+            
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Validação estática de volume
+     */
+    public static boolean validarVolume(double volume) {
+        return volume >= 350.0 && volume <= 500.0;
     }
 
     /**
@@ -153,7 +186,7 @@ public class Doacao {
         if (triagem == null) {
             throw new IllegalArgumentException("Triagem não pode ser nula.");
         }
-        return triagem.isStatus(); // Triagem deve estar aprovada
+        return triagem.isStatus();
     }
 
     /**
@@ -161,7 +194,7 @@ public class Doacao {
      */
     public static long diasDesdeUltimaDoacao(Date ultimaDoacao) {
         if (ultimaDoacao == null) {
-            return Long.MAX_VALUE; // Nunca doou antes
+            return Long.MAX_VALUE;
         }
         Date hoje = new Date(System.currentTimeMillis());
         return (hoje.getTime() - ultimaDoacao.getTime()) / (1000 * 60 * 60 * 24);
@@ -173,14 +206,13 @@ public class Doacao {
     public static boolean podeDoarNovamente(String sexoDoador, Date ultimaDoacao) {
         long diasDesdeUltima = diasDesdeUltimaDoacao(ultimaDoacao);
 
-        // Intervalos mínimos: Homens 60 dias, Mulheres 90 dias
         if ("M".equalsIgnoreCase(sexoDoador) || "MASCULINO".equalsIgnoreCase(sexoDoador)) {
             return diasDesdeUltima >= 60;
         } else if ("F".equalsIgnoreCase(sexoDoador) || "FEMININO".equalsIgnoreCase(sexoDoador)) {
             return diasDesdeUltima >= 90;
         }
 
-        return false; // Sexo não identificado
+        return false;
     }
 
     /**

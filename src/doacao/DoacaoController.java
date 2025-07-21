@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import triagem.Triagem;
+import triagem.TriagemDAO;
 
 /**
  * Controller - Classe DoacaoController
@@ -18,12 +20,10 @@ public class DoacaoController {
      */
     public static Doacao registrarDoacao(Doacao doacao) {
         try {
-            // Validações de negócio
             if (!validarDoacao(doacao)) {
                 return null;
             }
 
-            // Persiste no banco via DAO
             return DoacaoDAO.inserir(doacao);
 
         } catch (SQLException e) {
@@ -76,7 +76,6 @@ public class DoacaoController {
      */
     public static boolean atualizarDoacao(Doacao doacao) {
         try {
-            // Validações de negócio
             if (!validarDoacao(doacao)) {
                 return false;
             }
@@ -323,28 +322,45 @@ public class DoacaoController {
             return false;
         }
 
-        if (doacao.getData() == null) {
-            DoacaoView.exibirMensagemErro("Data é obrigatória");
+        if (!doacao.validarDados()) {
+            DoacaoView.exibirMensagemErro("Dados básicos obrigatórios não informados");
             return false;
         }
 
-        if (doacao.getHora() == null) {
-            DoacaoView.exibirMensagemErro("Hora é obrigatória");
+        if (!Doacao.validarData(doacao.getData())) {
+            DoacaoView.exibirMensagemErro("Data da doação não pode ser anterior à data atual");
             return false;
         }
 
-        if (doacao.getVolume() < 350 || doacao.getVolume() > 500) {
+        if (!Doacao.validarHora(doacao.getHora())) {
+            DoacaoView.exibirMensagemErro("Formato de hora inválido. Use HH:MM:SS com valores válidos");
+            return false;
+        }
+
+        if (!Doacao.validarVolume(doacao.getVolume())) {
             DoacaoView.exibirMensagemErro("Volume deve estar entre 350ml e 500ml");
             return false;
         }
 
-        if (doacao.getTriagemId() == null) {
-            DoacaoView.exibirMensagemErro("ID da triagem é obrigatório");
-            return false;
-        }
-
-        if (doacao.getDoadorId() == null) {
-            DoacaoView.exibirMensagemErro("ID do doador é obrigatório");
+        try {
+            Triagem triagem = TriagemDAO.buscarPorId(doacao.getTriagemId());
+            if (triagem == null) {
+                DoacaoView.exibirMensagemErro("Triagem não encontrada com ID: " + doacao.getTriagemId());
+                return false;
+            }
+            
+            if (!triagem.isStatus()) {
+                DoacaoView.exibirMensagemErro("Doação não pode ser realizada! Triagem REPROVADA (ID: " + doacao.getTriagemId() + ")");
+                return false;
+            }
+            
+            if (!Doacao.podeRealizar(triagem)) {
+                DoacaoView.exibirMensagemErro("Triagem não está apta para doação");
+                return false;
+            }
+            
+        } catch (SQLException e) {
+            DoacaoView.exibirMensagemErro("Erro ao validar triagem: " + e.getMessage());
             return false;
         }
 
