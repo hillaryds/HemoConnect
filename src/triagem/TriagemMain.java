@@ -10,7 +10,7 @@ import java.util.InputMismatchException;
  * Executável principal do sistema de triagem seguindo o padrão MVC tradicional
  * Permite gerenciar triagens através de um menu intuitivo
  */
-public class SistemaTriagemMenu {
+public class TriagemMain {
     
     private static Scanner scanner = new Scanner(System.in);
     private static boolean sistemaAtivo = true;
@@ -117,7 +117,7 @@ public class SistemaTriagemMenu {
             Date hoje = new Date(System.currentTimeMillis());
             
             // Usar Controller para criar triagem
-            TriagemControllerDB.criarTriagemComMensagem(bpm, pressao, temperatura, peso, hoje);
+            TriagemController.criarTriagemComMensagem(bpm, pressao, temperatura, peso, hoje);
             
         } catch (Exception e) {
             TriagemView.exibirMensagemErro("Erro ao criar triagem: " + e.getMessage());
@@ -141,7 +141,7 @@ public class SistemaTriagemMenu {
                 data = Date.valueOf(dataInput);
             }
             
-            TriagemControllerDB.exibirTriagensDeData(data);
+            TriagemController.exibirTriagensDeData(data);
             
         } catch (Exception e) {
             TriagemView.exibirMensagemErro("Erro ao listar triagens: " + e.getMessage());
@@ -153,7 +153,7 @@ public class SistemaTriagemMenu {
      */
     private static void exibirTriagensDodia() {
         System.out.println("\n=== TRIAGENS DO DIA ATUAL ===");
-        TriagemControllerDB.exibirTriagensDodia();
+        TriagemController.exibirTriagensDodia();
     }
     
     /**
@@ -161,7 +161,7 @@ public class SistemaTriagemMenu {
      */
     private static void exibirTriagensDoMes() {
         System.out.println("\n=== TRIAGENS DO MÊS ATUAL ===");
-        TriagemControllerDB.exibirTriagensDoMes();
+        TriagemController.exibirTriagensDoMes();
     }
     
     /**
@@ -174,7 +174,7 @@ public class SistemaTriagemMenu {
             System.out.print("Digite o ID da triagem: ");
             Long id = lerLong();
             
-            Triagem triagem = TriagemControllerDB.buscarTriagemPorId(id);
+            Triagem triagem = TriagemController.buscarTriagemPorId(id);
             
             if (triagem == null) {
                 TriagemView.exibirMensagemErro("Triagem não encontrada!");
@@ -196,7 +196,7 @@ public class SistemaTriagemMenu {
             System.out.print("Novo peso (atual: " + triagem.getPeso() + "): ");
             double peso = lerDouble();
             
-            TriagemControllerDB.atualizarTriagemComMensagem(triagem, bpm, pressao, temperatura, peso);
+            TriagemController.atualizarTriagemComMensagem(triagem, bpm, pressao, temperatura, peso);
             
         } catch (Exception e) {
             TriagemView.exibirMensagemErro("Erro ao atualizar triagem: " + e.getMessage());
@@ -213,7 +213,7 @@ public class SistemaTriagemMenu {
             System.out.print("Digite o ID da triagem: ");
             Long id = lerLong();
             
-            Triagem triagem = TriagemControllerDB.buscarTriagemPorId(id);
+            Triagem triagem = TriagemController.buscarTriagemPorId(id);
             
             if (triagem == null) {
                 TriagemView.exibirMensagemErro("Triagem não encontrada!");
@@ -227,7 +227,7 @@ public class SistemaTriagemMenu {
             String confirmacao = lerString().toLowerCase();
             
             if (confirmacao.equals("s") || confirmacao.equals("sim")) {
-                TriagemControllerDB.removerTriagemComMensagem(triagem);
+                TriagemController.removerTriagemComMensagem(triagem);
             } else {
                 System.out.println("Operação cancelada.");
             }
@@ -242,7 +242,7 @@ public class SistemaTriagemMenu {
      */
     private static void listarTodasTriagens() {
         System.out.println("\n=== TODAS AS TRIAGENS ===");
-        TriagemControllerDB.exibirTodasTriagens();
+        TriagemController.exibirTodasTriagens();
     }
     
     /**
@@ -255,7 +255,7 @@ public class SistemaTriagemMenu {
             System.out.print("Digite o ID da triagem: ");
             Long id = lerLong();
             
-            TriagemControllerDB.exibirTriagemPorId(id);
+            TriagemController.exibirTriagemPorId(id);
             
         } catch (Exception e) {
             TriagemView.exibirMensagemErro("Erro ao buscar triagem: " + e.getMessage());
@@ -268,7 +268,7 @@ public class SistemaTriagemMenu {
     private static void exibirEstatisticas() {
         System.out.println("\n=== ESTATÍSTICAS DO SISTEMA ===");
         
-        var todasTriagens = TriagemControllerDB.obterTodasTriagens();
+        var todasTriagens = TriagemController.obterTodasTriagens();
         int total = todasTriagens.size();
         
         if (total == 0) {
@@ -286,7 +286,7 @@ public class SistemaTriagemMenu {
         
         // Estatísticas do dia atual
         Date hoje = new Date(System.currentTimeMillis());
-        var triagensHoje = TriagemControllerDB.listarTriagemDate(hoje);
+        var triagensHoje = TriagemController.listarTriagemDate(hoje);
         System.out.println("\nTriagens realizadas hoje: " + triagensHoje.size());
     }
     
