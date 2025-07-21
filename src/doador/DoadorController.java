@@ -79,24 +79,6 @@ public class DoadorController {
         }
     }
     
-    public static List<Doador> listarDoadoresPorTipoSanguineo(String tipoSanguineo) {
-        try {
-            return DoadorDAO.buscarPorTipoSanguineo(tipoSanguineo);
-        } catch (SQLException e) {
-            System.err.println("Erro ao buscar doadores por tipo sanguíneo: " + e.getMessage());
-            return new ArrayList<>();
-        }
-    }
-    
-    public static List<Doador> listarDoadoresPorCidade(String cidade) {
-        try {
-            return DoadorDAO.buscarPorCidade(cidade);
-        } catch (SQLException e) {
-            System.err.println("Erro ao buscar doadores por cidade: " + e.getMessage());
-            return new ArrayList<>();
-        }
-    }
-
     public static List<Doador> listarDoadoresPorHospital(Long idHospital) {
         try {
             return DoadorDAO.buscarPorHospital(idHospital);
@@ -188,17 +170,13 @@ public class DoadorController {
                 return false;
             }
             
+            // Verifica critérios básicos (idade)
             if (!doador.podeDoar()) {
                 return false;
             }
             
-            if (doador.getUltimaDoacao() != null) {
-                long diffInMillies = System.currentTimeMillis() - doador.getUltimaDoacao().getTime();
-                long diffInDays = diffInMillies / (24 * 60 * 60 * 1000);
-                return diffInDays >= 60;
-            }
-            
-            return true;
+            // Verifica intervalo desde última doação considerando o sexo do doador
+            return doacao.Doacao.podeDoarNovamente(doador.getSexo(), doador.getUltimaDoacao());
             
         } catch (SQLException e) {
             System.err.println("Erro ao verificar se doador pode doar: " + e.getMessage());

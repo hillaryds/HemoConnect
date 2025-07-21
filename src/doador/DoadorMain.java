@@ -28,15 +28,9 @@ public class DoadorMain {
                     buscarDoadorPorCpf();
                     break;
                 case 4:
-                    listarPorTipoSanguineo();
-                    break;
-                case 5:
-                    listarPorCidade();
-                    break;
-                case 6:
                     listarPorHospital();
                     break;
-                case 7:
+                case 5:
                     removerDoador();
                     break;
                 case 0:
@@ -91,32 +85,6 @@ public class DoadorMain {
                 DoadorView.exibirDoador(doador);
             } else {
                 System.out.println("Doador não encontrado com o CPF: " + cpf);
-            }
-        }
-    }
-    
-    private static void listarPorTipoSanguineo() {
-        System.out.println("\n=== LISTAR POR TIPO SANGUÍNEO ===");
-        
-        String tipoSanguineo = DoadorView.solicitarTipoSanguineo();
-        if (tipoSanguineo != null && !tipoSanguineo.isEmpty()) {
-            List<Doador> doadores = DoadorController.listarDoadoresPorTipoSanguineo(tipoSanguineo);
-            DoadorView.exibirDoadoresPorTipoSanguineo(tipoSanguineo, doadores);
-        }
-    }
-    
-    private static void listarPorCidade() {
-        System.out.println("\n=== LISTAR POR CIDADE ===");
-        
-        String cidade = DoadorView.solicitarCidade();
-        if (cidade != null && !cidade.isEmpty()) {
-            List<Doador> doadores = DoadorController.listarDoadoresPorCidade(cidade);
-            
-            if (doadores.isEmpty()) {
-                System.out.println("Nenhum doador encontrado na cidade: " + cidade);
-            } else {
-                System.out.println("Doadores encontrados na cidade: " + cidade);
-                DoadorView.exibirListaDoadores(doadores);
             }
         }
     }
