@@ -207,16 +207,18 @@ public class DoadorView {
     }
     
     public static void exibirMenuDoador() {
-        System.out.println("=== MENU DO DOADOR ===");
-        System.out.println("1. Listar todos os doadores");
-        System.out.println("2. Criar doador");
-        System.out.println("3. Buscar doador por CPF");
-        System.out.println("4. Listar por tipo sanguíneo");
-        System.out.println("5. Listar por cidade");
-        System.out.println("6. Listar doadores por hospital");
-        System.out.println("7. Remover doador");
-        System.out.println("0. Sair");
-        System.out.println("======================");
+        System.out.println("\n╔═════════════════════════════════════╗");
+        System.out.println("║           MENU DE DOADORES          ║");
+        System.out.println("╠═════════════════════════════════════╣");
+        System.out.println("║ 1.  Listar Todos os Doadores        ║");
+        System.out.println("║ 2.  Criar Doador                    ║");
+        System.out.println("║ 3.  Buscar Doador por CPF           ║");
+        System.out.println("║ 4.  Listar por Tipo Sanguíneo       ║");
+        System.out.println("║ 5.  Listar por Cidade               ║");
+        System.out.println("║ 6.  Listar Doadores por Hospital    ║");
+        System.out.println("║ 7.  Remover Doador                  ║");
+        System.out.println("║ 0.  Sair                            ║");
+        System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: ");
     }
     

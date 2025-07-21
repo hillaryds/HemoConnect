@@ -3,6 +3,16 @@ package administrador;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Classe principal do módulo Administrador
+ * 
+ * Regra de Negócio:
+ * - Existe um usuário principal pré-cadastrado no banco
+ * - Apenas administradores logados podem cadastrar outros administradores
+ * - Menu inicial: apenas Login e Sair
+ * - Um administrador deve estar associado a um hospital
+ * - Um hospital pode ter um ou mais administradores
+ */
 public class AdministradorMain {
     
     private static final Scanner scanner = new Scanner(System.in);
@@ -39,30 +49,35 @@ public class AdministradorMain {
     }
     
     private static void exibirMenuNaoLogado() {
-        System.out.println("\n=== SISTEMA ADMINISTRADOR - HEMOCONNECT ===");
-        System.out.println("1. Cadastrar Novo Administrador");
-        System.out.println("2. Fazer Login");
-        System.out.println("0. Sair");
+        System.out.println("\n╔═════════════════════════════════════╗");
+        System.out.println("║        SISTEMA ADMINISTRADOR        ║");
+        System.out.println("║            HEMOCONNECT              ║");
+        System.out.println("╠═════════════════════════════════════╣");
+        System.out.println("║ 1.  Fazer Login                     ║");
+        System.out.println("║ 0.  Sair                            ║");
+        System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: ");
     }
     
     private static void exibirMenuLogado() {
-        System.out.println("\n=== SISTEMA ADMINISTRADOR - HEMOCONNECT ===");
-        System.out.println("Logado como: " + administradorLogado.getNomeAdministrador());
-        System.out.println("1. Listar Administradores");
-        System.out.println("2. Criar Administrador");
-        System.out.println("3. Remover Administrador");
-        System.out.println("4. Fazer Logout");
-        System.out.println("0. Sair");
+        System.out.println("\n╔═════════════════════════════════════╗");
+        System.out.println("║        SISTEMA ADMINISTRADOR        ║");
+        System.out.println("║            HEMOCONNECT              ║");
+        System.out.println("╠═════════════════════════════════════╣");
+        System.out.println("║ Logado como: " + String.format("%-19s", administradorLogado.getNomeAdministrador()) + "║");
+        System.out.println("╠═════════════════════════════════════╣");
+        System.out.println("║ 1.  Listar Administradores          ║");
+        System.out.println("║ 2.  Criar Administrador             ║");
+        System.out.println("║ 3.  Remover Administrador           ║");
+        System.out.println("║ 4.  Fazer Logout                    ║");
+        System.out.println("║ 0.  Sair                            ║");
+        System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: ");
     }
     
     private static void processarOpcaoNaoLogado(int opcao) {
         switch (opcao) {
             case 1:
-                criarAdministrador();
-                break;
-            case 2:
                 realizarLogin();
                 break;
             case 0:

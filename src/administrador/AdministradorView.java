@@ -210,13 +210,15 @@ public class AdministradorView {
     
     
     public static void exibirMenuAdministrador() {
-        System.out.println("=== MENU DO ADMINISTRADOR ===");
-        System.out.println("1. Listar administradores");
-        System.out.println("2. Criar administrador");
-        System.out.println("3. Remover administrador");
-        System.out.println("4. Fazer login");
-        System.out.println("0. Sair");
-        System.out.println("============================");
+        System.out.println("\n╔═════════════════════════════════════╗");
+        System.out.println("║        MENU DE ADMINISTRADORES      ║");
+        System.out.println("╠═════════════════════════════════════╣");
+        System.out.println("║ 1.  Listar Administradores          ║");
+        System.out.println("║ 2.  Criar Administrador             ║");
+        System.out.println("║ 3.  Remover Administrador           ║");
+        System.out.println("║ 4.  Fazer Login                     ║");
+        System.out.println("║ 0.  Sair                            ║");
+        System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: ");
     }
 }

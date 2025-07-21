@@ -179,18 +179,20 @@ public class TriagemView {
      * Exibe menu principal do sistema de triagem
      */
     public static void exibirMenuPrincipal() {
-        System.out.println("\n=== SISTEMA DE TRIAGEM HEMOCONNECT ===");
-        System.out.println("1. Criar nova triagem");
-        System.out.println("2. Listar triagens por data");
-        System.out.println("3. Exibir triagens do dia atual");
-        System.out.println("4. Exibir triagens do mês atual");
-        System.out.println("5. Atualizar triagem");
-        System.out.println("6. Remover triagem");
-        System.out.println("7. Listar todas as triagens");
-        System.out.println("8. Buscar triagem por ID");
-        System.out.println("9. Exibir estatísticas");
-        System.out.println("0. Sair");
-        System.out.println("=====================================");
+        System.out.println("\n╔═════════════════════════════════════╗");
+        System.out.println("║           MENU DE TRIAGEM           ║");
+        System.out.println("╠═════════════════════════════════════╣");
+        System.out.println("║ 1.  Criar Nova Triagem              ║");
+        System.out.println("║ 2.  Listar Triagens por Data        ║");
+        System.out.println("║ 3.  Triagens do Dia Atual           ║");
+        System.out.println("║ 4.  Triagens do Mês Atual           ║");
+        System.out.println("║ 5.  Atualizar Triagem               ║");
+        System.out.println("║ 6.  Remover Triagem                 ║");
+        System.out.println("║ 7.  Listar Todas as Triagens        ║");
+        System.out.println("║ 8.  Buscar Triagem por ID           ║");
+        System.out.println("║ 9.  Exibir Estatísticas             ║");
+        System.out.println("║ 0.  Sair                            ║");
+        System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: ");
     }
     
