@@ -3,24 +3,6 @@ package administrador;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Classe principal do módulo Administrador
- * 
- * Regra de Negócio:
- * - Um administrador deve estar associado a um hospital
- * - Um hospital pode ter um ou mais administradores
- * - O cadastro de novos administradores é sempre permitido (não requer login)
- * 
- * Funcionalidades disponíveis sem login:
- * - Cadastrar novo administrador
- * - Fazer login
- * 
- * Funcionalidades disponíveis com login:
- * - Listar administradores
- * - Criar administrador
- * - Remover administrador
- * - Fazer logout
- */
 public class AdministradorMain {
     
     private static final Scanner scanner = new Scanner(System.in);
