@@ -16,6 +16,14 @@ public class TriagemMain {
     private static boolean sistemaAtivo = true;
     
     public static void main(String[] args) {
+        executarMenuPrincipal();
+    }
+    
+    /**
+     * Executa o menu principal do sistema de triagem
+     * Método utilizado pelo MainSystem para integração
+     */
+    public static void executarMenuPrincipal() {
         System.out.println("Inicializando Sistema HemoConnect...");
         
         // Verificar conexão com banco de dados
