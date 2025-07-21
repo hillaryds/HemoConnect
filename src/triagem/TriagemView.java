@@ -191,7 +191,7 @@ public class TriagemView {
         System.out.println("║ 7.  Listar Todas as Triagens        ║");
         System.out.println("║ 8.  Buscar Triagem por ID           ║");
         System.out.println("║ 9.  Exibir Estatísticas             ║");
-        System.out.println("║ 0.  Sair                            ║");
+        System.out.println("║ 0.  Voltar ao Menu Principal        ║");
         System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: ");
     }
@@ -207,13 +207,4 @@ public class TriagemView {
                          " | Temp: " + triagem.getTemperatura() + "°C");
     }
     
-    /**
-     * Exibe cabeçalho do sistema
-     */
-    public static void exibirCabecalho() {
-        System.out.println("*******************************************");
-        System.out.println("*        SISTEMA HEMOCONNECT             *");
-        System.out.println("*             Triagens                   *");
-        System.out.println("*******************************************");
-    }
 }

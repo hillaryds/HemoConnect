@@ -19,8 +19,6 @@ public class DoacaoMain {
      * Método utilizado pelo MainSystem para integração
      */
     public static void executarMenuPrincipal() {
-        // Exibe cabeçalho
-        DoacaoView.exibirCabecalho();
 
         // Testa conexão com banco
         if (!testarConexao()) {
@@ -39,6 +37,7 @@ public class DoacaoMain {
                 int opcao = DoacaoView.exibirMenuPrincipal();
 
                 if (opcao == 0) {
+                    System.out.println("Retornando ao Menu Principal...");
                     sistemaAtivo = false;
                 } else {
                     DoacaoController.processarOpcaoMenu(opcao);

@@ -27,10 +27,10 @@ public class DoacaoView {
         System.out.println("║ 4.  Total Doações do Mês            ║");
         System.out.println("║ 5.  Buscar Doação por ID            ║");
         System.out.println("║ 6.  Listar TODAS as Doações         ║");
-        System.out.println("║ 7.  Atualizar Doação               ║");
-        System.out.println("║ 8.  Remover Doação                 ║");
+        System.out.println("║ 7.  Atualizar Doação                ║");
+        System.out.println("║ 8.  Remover Doação                  ║");
         System.out.println("║ 9.  Estatísticas Gerais             ║");
-        System.out.println("║ 0.  Sair                            ║");
+        System.out.println("║ 0.  Voltar ao Menu Principal        ║");
         System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: ");
 
