@@ -53,28 +53,6 @@ public class DoadorView {
         System.out.println("=========================");
     }
     
-    public static void exibirDoadoresPorTipoSanguineo(String tipoSanguineo, List<Doador> doadores) {
-        System.out.println("=== DOADORES TIPO SANGUÍNEO " + tipoSanguineo + " ===");
-        
-        if (doadores.isEmpty()) {
-            System.out.println("Nenhum doador encontrado com tipo sanguíneo " + tipoSanguineo);
-        } else {
-            System.out.println("Total: " + doadores.size() + " doadores");
-            
-            int aptos = 0;
-            for (Doador doador : doadores) {
-                if (doador.podeDoar()) aptos++;
-            }
-            
-            System.out.println("Aptos para doação: " + aptos);
-            System.out.println();
-            
-            exibirListaDoadores(doadores);
-        }
-        
-        System.out.println("=======================================");
-    }
-    
     public static void exibirMensagemDoadorCriado(Doador doador) {
         System.out.println("=== DOADOR CRIADO COM SUCESSO ===");
         System.out.println("ID: " + doador.getId());
@@ -213,13 +191,11 @@ public class DoadorView {
         System.out.println("║ 1.  Listar Todos os Doadores        ║");
         System.out.println("║ 2.  Criar Doador                    ║");
         System.out.println("║ 3.  Buscar Doador por CPF           ║");
-        System.out.println("║ 4.  Listar por Tipo Sanguíneo       ║");
-        System.out.println("║ 5.  Listar por Cidade               ║");
-        System.out.println("║ 6.  Listar Doadores por Hospital    ║");
-        System.out.println("║ 7.  Remover Doador                  ║");
+        System.out.println("║ 4.  Listar Doadores por Hospital    ║");
+        System.out.println("║ 5.  Remover Doador                  ║");
         System.out.println("║ 0.  Voltar ao Menu Principal        ║");
         System.out.println("╚═════════════════════════════════════╝");
-        System.out.print("Escolha uma opção: ");
+        System.out.print("Escolha uma opção: "); 
     }
     
     public static Long solicitarCpf() {
@@ -230,16 +206,6 @@ public class DoadorView {
             System.out.println("CPF inválido.");
             return null;
         }
-    }
-    
-    public static String solicitarTipoSanguineo() {
-        System.out.print("Digite o tipo sanguíneo (A+, A-, B+, B-, AB+, AB-, O+, O-): ");
-        return scanner.nextLine().trim().toUpperCase();
-    }
-    
-    public static String solicitarCidade() {
-        System.out.print("Digite o nome da cidade: ");
-        return scanner.nextLine().trim();
     }
     
     public static Long solicitarIdHospital() {
