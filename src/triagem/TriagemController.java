@@ -118,12 +118,15 @@ public class TriagemController {
     }
     
     /**
-     * Remove uma triagem do sistema
+     * Remove uma triagem do sistema e doacoes dependentes 
+     * MÉTODO ÚNICO: Sempre remove doações dependentes automaticamente
+     * @param triagem Triagem a ser removida
      * @return true se remoção foi bem-sucedida, false caso contrário
      */
     public static boolean removerTriagem(Triagem triagem) {
         try {
             if (triagem.getId() == null) {
+                System.err.println("Erro: Triagem não possui ID para remoção");
                 return false;
             }
             
@@ -230,9 +233,10 @@ public class TriagemController {
     
     /**
      * Remove uma triagem e exibe o resultado
+     * MÉTODO SIMPLIFICADO: Agora sempre usa cascata automaticamente
      */
     public static void removerTriagemComMensagem(Triagem triagem) {
-        boolean sucesso = removerTriagem(triagem);
+        boolean sucesso = removerTriagem(triagem); // Método unificado com cascata
         TriagemView.exibirMensagemTriagemRemovida(sucesso);
     }
     
