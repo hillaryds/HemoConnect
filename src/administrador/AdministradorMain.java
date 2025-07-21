@@ -3,6 +3,24 @@ package administrador;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Classe principal do módulo Administrador
+ * 
+ * Regra de Negócio:
+ * - Um administrador deve estar associado a um hospital
+ * - Um hospital pode ter um ou mais administradores
+ * - O cadastro de novos administradores é sempre permitido (não requer login)
+ * 
+ * Funcionalidades disponíveis sem login:
+ * - Cadastrar novo administrador
+ * - Fazer login
+ * 
+ * Funcionalidades disponíveis com login:
+ * - Listar administradores
+ * - Criar administrador
+ * - Remover administrador
+ * - Fazer logout
+ */
 public class AdministradorMain {
     
     private static final Scanner scanner = new Scanner(System.in);
@@ -40,7 +58,8 @@ public class AdministradorMain {
     
     private static void exibirMenuNaoLogado() {
         System.out.println("\n=== SISTEMA ADMINISTRADOR - HEMOCONNECT ===");
-        System.out.println("1. Fazer Login");
+        System.out.println("1. Cadastrar Novo Administrador");
+        System.out.println("2. Fazer Login");
         System.out.println("0. Sair");
         System.out.print("Escolha uma opção: ");
     }
@@ -59,6 +78,9 @@ public class AdministradorMain {
     private static void processarOpcaoNaoLogado(int opcao) {
         switch (opcao) {
             case 1:
+                criarAdministrador();
+                break;
+            case 2:
                 realizarLogin();
                 break;
             case 0:
