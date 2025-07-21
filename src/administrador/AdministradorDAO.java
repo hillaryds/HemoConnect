@@ -174,6 +174,29 @@ public class AdministradorDAO {
     }
     
     /**
+     * Busca administradores por hospital
+     * @param idHospital ID do hospital
+     * @return Lista de administradores do hospital
+     * @throws SQLException se houver erro na consulta
+     */
+    public static List<Administrador> buscarPorHospital(Long idHospital) throws SQLException {
+        Connection conn = DatabaseConnection.getConnection();
+        List<Administrador> administradores = new ArrayList<>();
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SELECT_ADMINISTRADORES_BY_HOSPITAL)) {
+            stmt.setLong(1, idHospital);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    administradores.add(mapResultSetToAdministrador(rs));
+                }
+            }
+        }
+        
+        return administradores;
+    }
+    
+    /**
      * Mapeia um ResultSet para um objeto Administrador
      * @param rs ResultSet com dados do administrador
      * @return Administrador criado a partir do ResultSet

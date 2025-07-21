@@ -11,6 +11,7 @@ import java.util.Scanner;
 public class MainSystem {
     
     private static final Scanner scanner = new Scanner(System.in);
+    private static administrador.Administrador administradorLogado = null; // Armazena o admin logado
     
     public static void main(String[] args) {
         executarSistemaPrincipal();
@@ -57,6 +58,7 @@ public class MainSystem {
             boolean loginValido = AdministradorController.realizarLogin(login, senha) != null;
             
             if (loginValido) {
+                administradorLogado = AdministradorController.realizarLogin(login, senha); // Armazena o admin logado
                 System.out.println("\nLogin realizado com sucesso!");
                 System.out.println("Bem-vindo ao Sistema HemoConnect!");
             } else {
@@ -113,7 +115,7 @@ public class MainSystem {
     private static void acessarModuloAdministradores() {
         System.out.println("\nIniciando Módulo de Administradores...");
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        AdministradorMain.executarMenuPrincipal();
+        AdministradorMain.executarMenuPrincipal(administradorLogado);
     }
     
     /**

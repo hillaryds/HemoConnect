@@ -199,6 +199,23 @@ public class AdministradorController {
     }
     
     /**
+     * Busca administradores por hospital
+     * @param idHospital ID do hospital
+     * @return Lista de administradores do hospital ou lista vazia se houve erro
+     */
+    public static List<Administrador> listarAdministradoresPorHospital(Long idHospital) {
+        try {
+            if (idHospital == null) {
+                return new ArrayList<>();
+            }
+            return AdministradorDAO.buscarPorHospital(idHospital);
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar administradores por hospital: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+    
+    /**
      * Valida dados de entrada básicos
      * @param nome Nome do administrador
      * @param login Login do administrador
