@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import triagem.Triagem;
 import triagem.TriagemDAO;
+import doador.DoadorController;
 
 /**
  * Controller - Classe DoacaoController
@@ -359,11 +360,60 @@ public class DoacaoController {
                 return false;
             }
             
+            if (!validarDataTriagemDoacao(triagem.getDate(), doacao.getData())) {
+                return false;
+            }
         } catch (SQLException e) {
             DoacaoView.exibirMensagemErro("Erro ao validar triagem: " + e.getMessage());
             return false;
         }
 
+        if (!validarDoador(doacao.getDoadorId())) {
+            return false;
+        }
+
         return true;
+    }
+    
+    /**
+     * Valida a compatibilidade de datas entre triagem e doação
+     */
+    private static boolean validarDataTriagemDoacao(Date dataTriagem, Date dataDoacao) {
+        if (dataTriagem == null || dataDoacao == null) {
+            DoacaoView.exibirMensagemErro("Erro interno: datas da triagem ou doação estão nulas");
+            return false;
+        }
+        
+        String dataTriagemStr = dataTriagem.toString();
+        String dataDoacaoStr = dataDoacao.toString();
+        
+        if (!dataTriagemStr.equals(dataDoacaoStr)) {
+            DoacaoView.exibirMensagemErro("ERRO - Triagem e doação devem ser realizadas no mesmo dia!");
+            DoacaoView.exibirMensagemErro("Data da triagem: " + dataTriagem);
+            DoacaoView.exibirMensagemErro("Data da doação: " + dataDoacao);
+            DoacaoView.exibirMensagemErro("Realize uma nova triagem no dia da doação");
+            return false;
+        }
+        return true;
+    }
+    
+    private static boolean validarDoador(Long idDoador) {
+        try {
+            boolean podeDoar = DoadorController.podeDoar(idDoador);
+            
+            if (!podeDoar) {
+                DoacaoView.exibirMensagemErro("ERRO - Este doador ainda não pode doar!");
+                DoacaoView.exibirMensagemErro("Não passou o intervalo mínimo entre doações");
+                DoacaoView.exibirMensagemErro("Homens: 60 dias entre doações");
+                DoacaoView.exibirMensagemErro("Mulheres: 90 dias entre doações");
+                DoacaoView.exibirMensagemErro("Aguarde o período mínimo ou selecione outro doador");
+                return false;
+            }
+            
+            return true;
+        } catch (Exception e) {
+            DoacaoView.exibirMensagemErro("ERRO: Falha ao verificar elegibilidade do doador: " + e.getMessage());
+            return false;
+        }
     }
 }

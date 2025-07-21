@@ -140,11 +140,16 @@ public class Doacao {
 
     /**
      * Validação estática de data
+     * REGRA: Doações só podem ser cadastradas no dia atual
      */
     public static boolean validarData(Date data) {
         if (data == null) return false;
+        
         Date hoje = new Date(System.currentTimeMillis());
-        return !data.before(hoje);
+        String hojeStr = hoje.toString(); // formato YYYY-MM-DD
+        Date hojeNormalizada = Date.valueOf(hojeStr);
+        
+        return data.compareTo(hojeNormalizada) == 0;
     }
 
     /**
@@ -155,6 +160,31 @@ public class Doacao {
         
         String horaStr = hora.toString();
         String[] partes = horaStr.split(":");
+        
+        if (partes.length != 3) return false;
+        
+        try {
+            int horas = Integer.parseInt(partes[0]);
+            int minutos = Integer.parseInt(partes[1]);
+            int segundos = Integer.parseInt(partes[2]);
+            
+            return (horas >= 0 && horas <= 23) &&
+                   (minutos >= 0 && minutos <= 59) &&
+                   (segundos >= 0 && segundos <= 59);
+            
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Validação estática de string de hora (antes da conversão)
+     * Evita que Time.valueOf() faça correções automáticas
+     */
+    public static boolean validarStringHora(String horaStr) {
+        if (horaStr == null || horaStr.trim().isEmpty()) return false;
+        
+        String[] partes = horaStr.trim().split(":");
         
         if (partes.length != 3) return false;
         

@@ -52,7 +52,14 @@ public class DoacaoView {
             Date data = Date.valueOf(scanner.nextLine());
 
             System.out.print("Hora (HH:MM:SS): ");
-            Time hora = Time.valueOf(scanner.nextLine());
+            String horaInput = scanner.nextLine();
+            
+            if (!Doacao.validarStringHora(horaInput)) {
+                System.out.println(" Erro: Formato de hora inválido! Use HH:MM:SS com valores válidos (horas: 0-23, minutos: 0-59, segundos: 0-59)");
+                return null;
+            }
+            
+            Time hora = Time.valueOf(horaInput);
 
             System.out.print("Volume (ml): ");
             double volume = Double.parseDouble(scanner.nextLine());
@@ -62,9 +69,13 @@ public class DoacaoView {
                 return null;
             }
 
+            // Lista triagens disponíveis antes de pedir o ID
+            exibirTriagensDisponiveis();
             System.out.print("ID Triagem: ");
             Long triagemId = Long.parseLong(scanner.nextLine());
 
+            // Lista doadores disponíveis antes de pedir o ID
+            exibirDoadoresDisponiveis();
             System.out.print("ID Doador: ");
             Long doadorId = Long.parseLong(scanner.nextLine());
 
@@ -119,7 +130,7 @@ public class DoacaoView {
     }
 
     /**
-     * Exibe detalhes de uma doação
+     * Exibe detalhes de uma doação com informações da triagem associada
      */
     public static void exibirDoacao(Doacao doacao) {
         if (doacao == null) {
@@ -135,9 +146,57 @@ public class DoacaoView {
         System.out.println("║ Data: " + String.format("%-25s", doacao.getData()) + "║");
         System.out.println("║ Hora: " + String.format("%-25s", doacao.getHora()) + "║");
         System.out.println("║ Volume: " + String.format("%-21.0f", doacao.getVolume()) + "ml ║");
-        System.out.println("║ Triagem: " + String.format("%-22d", doacao.getTriagemId()) + "║");
-        System.out.println("║ Doador: " + String.format("%-23d", doacao.getDoadorId()) + "║");
+        System.out.println("║ Triagem ID: " + String.format("%-18d", doacao.getTriagemId()) + "║");
+        System.out.println("║ Doador ID: " + String.format("%-19d", doacao.getDoadorId()) + "║");
         System.out.println("╚════════════════════════════════════╝");
+        
+        // Buscar e exibir dados da triagem associada
+        try {
+            triagem.Triagem triagemAssociada = triagem.TriagemDAO.buscarPorId(doacao.getTriagemId());
+            if (triagemAssociada != null) {
+                System.out.println("\n TRIAGEM ASSOCIADA:");
+                System.out.println("╔════════════════════════════════════╗");
+                System.out.println("║         DADOS DA TRIAGEM           ║");
+                System.out.println("╠════════════════════════════════════╣");
+                System.out.println("║ ID: " + String.format("%-27d", triagemAssociada.getId()) + "║");
+                System.out.println("║ Data: " + String.format("%-25s", triagemAssociada.getDate()) + "║");
+                String status = triagemAssociada.isStatus() ? "APROVADA ✅" : "REPROVADA ❌";
+                System.out.println("║ Status: " + String.format("%-23s", status) + "║");
+                System.out.println("║ Temperatura: " + String.format("%-17.1f", triagemAssociada.getTemperatura()) + "°C ║");
+                System.out.println("║ Peso: " + String.format("%-24.1f", triagemAssociada.getPeso()) + "kg ║");
+                System.out.println("║ Pressão: " + String.format("%-21s", triagemAssociada.getPressaoArterial()) + "║");
+                System.out.println("║ BPM: " + String.format("%-26d", triagemAssociada.getBatimentosPorMinuto()) + "║");
+                System.out.println("╚════════════════════════════════════╝");
+            } else {
+                System.out.println("\n⚠️  AVISO: Triagem associada não encontrada (ID: " + doacao.getTriagemId() + ")");
+            }
+        } catch (Exception e) {
+            System.out.println("\n❌ Erro ao buscar triagem associada: " + e.getMessage());
+        }
+        
+        // Buscar e exibir dados do doador
+        try {
+            doador.Doador doadorAssociado = doador.DoadorDAO.buscarPorId(doacao.getDoadorId());
+            if (doadorAssociado != null) {
+                System.out.println("\n DOADOR ASSOCIADO:");
+                System.out.println("╔════════════════════════════════════╗");
+                System.out.println("║          DADOS DO DOADOR           ║");
+                System.out.println("╠════════════════════════════════════╣");
+                System.out.println("║ ID: " + String.format("%-27d", doadorAssociado.getId()) + "║");
+                System.out.println("║ Nome: " + String.format("%-25s", 
+                    doadorAssociado.getNome().length() > 25 ? 
+                    doadorAssociado.getNome().substring(0, 22) + "..." : 
+                    doadorAssociado.getNome()) + "║");
+                System.out.println("║ Tipo Sanguíneo: " + String.format("%-16s", doadorAssociado.getTipoSanguineo()) + "║");
+                System.out.println("║ CPF: " + String.format("%-26s", doadorAssociado.getCpf()) + "║");
+                System.out.println("║ Telefone: " + String.format("%-21s", doadorAssociado.getTelefone()) + "║");
+                System.out.println("╚════════════════════════════════════╝");
+            } else {
+                System.out.println("\n⚠️  AVISO: Doador associado não encontrado (ID: " + doacao.getDoadorId() + ")");
+            }
+        } catch (Exception e) {
+            System.out.println("\n❌ Erro ao buscar doador associado: " + e.getMessage());
+        }
     }
 
     /**
@@ -231,7 +290,18 @@ public class DoacaoView {
 
             System.out.print("Nova hora (HH:MM:SS) [Enter = manter]: ");
             String novaHoraStr = scanner.nextLine();
-            Time novaHora = novaHoraStr.trim().isEmpty() ? doacaoAtual.getHora() : Time.valueOf(novaHoraStr);
+            Time novaHora;
+            
+            if (novaHoraStr.trim().isEmpty()) {
+                novaHora = doacaoAtual.getHora();
+            } else {
+                // Valida a string antes de converter
+                if (!Doacao.validarStringHora(novaHoraStr)) {
+                    System.out.println(" Erro: Formato de hora inválido! Use HH:MM:SS com valores válidos (horas: 0-23, minutos: 0-59, segundos: 0-59)");
+                    return null;
+                }
+                novaHora = Time.valueOf(novaHoraStr);
+            }
 
             System.out.print("Novo volume (ml) [Enter = manter]: ");
             String novoVolumeStr = scanner.nextLine();
@@ -313,5 +383,85 @@ public class DoacaoView {
     public static void exibirConexaoSucesso() {
         System.out.println("Conectado ao banco de dados PostgreSQL");
         System.out.println("Sistema inicializado com sucesso");
+    }
+    
+    /**
+     * Exibe lista de triagens disponíveis para seleção
+     */
+    public static void exibirTriagensDisponiveis() {
+        try {
+            System.out.println("\n═══ TRIAGENS DISPONÍVEIS ═══");
+            
+            // Busca triagens aprovadas e ainda não utilizadas
+            java.util.List<triagem.Triagem> triagens = triagem.TriagemDAO.buscarTodas();
+            
+            if (triagens == null || triagens.isEmpty()) {
+                System.out.println(" Nenhuma triagem encontrada no sistema");
+                return;
+            }
+            
+            System.out.printf("%-4s %-12s %-8s %-10s %-8s %-10s%n",
+                    "ID", "DATA", "STATUS", "TEMP(°C)", "PESO", "PRESSÃO");
+            System.out.println("-".repeat(60));
+            
+            boolean temAprovadas = false;
+            for (triagem.Triagem t : triagens) {
+                String status = t.isStatus() ? "APROVADA" : "REPROVADA";
+                
+                System.out.printf("%-4d %-12s %-8s %-10.1f %-8.1f %-10s %n",
+                        t.getId(),
+                        t.getDate(),
+                        status,
+                        t.getTemperatura(),
+                        t.getPeso(),
+                        t.getPressaoArterial());
+                        
+                if (t.isStatus()) temAprovadas = true;
+            }
+            
+            System.out.println("-".repeat(60));
+            if (!temAprovadas) {
+                System.out.println("ATENÇÃO: Nenhuma triagem APROVADA disponível!");
+            }
+            System.out.println("Apenas triagens APROVADAS podem ser usadas para doação");
+            
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar triagens: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Exibe lista de doadores disponíveis para seleção
+     */
+    public static void exibirDoadoresDisponiveis() {
+        try {
+            System.out.println("\n═══ DOADORES DISPONÍVEIS ═══");
+            
+            java.util.List<doador.Doador> doadores = doador.DoadorDAO.buscarTodos();
+            
+            if (doadores == null || doadores.isEmpty()) {
+                System.out.println("Nenhum doador encontrado no sistema");
+                return;
+            }
+            
+            System.out.printf("%-4s %-20s %-4s %-12s %-15s%n",
+                    "ID", "NOME", "TIPO", "CPF", "TELEFONE");
+            System.out.println("-".repeat(65));
+            
+            for (doador.Doador d : doadores) {
+                System.out.printf("%-4d %-20s %-4s %-12s %-15s%n",
+                        d.getId(),
+                        d.getNome().length() > 20 ? d.getNome().substring(0, 17) + "..." : d.getNome(),
+                        d.getTipoSanguineo(),
+                        d.getCpf(),
+                        d.getTelefone());
+            }
+            
+            System.out.println("-".repeat(65));
+            System.out.println("Total: " + doadores.size() + " doadores");
+            
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar doadores: " + e.getMessage());
+        }
     }
 }

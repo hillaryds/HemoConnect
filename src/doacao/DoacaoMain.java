@@ -37,7 +37,6 @@ public class DoacaoMain {
                 int opcao = DoacaoView.exibirMenuPrincipal();
 
                 if (opcao == 0) {
-                    System.out.println("Retornando ao Menu Principal...");
                     sistemaAtivo = false;
                 } else {
                     DoacaoController.processarOpcaoMenu(opcao);
