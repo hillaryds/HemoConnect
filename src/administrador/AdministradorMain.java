@@ -23,14 +23,23 @@ public class AdministradorMain {
     }
     
     public static void executarMenuPrincipal() {
+        executarMenuPrincipal(null);
+    }
+    
+    /**
+     * Executa o menu principal com um administrador já logado
+     * @param adminLogado Administrador já autenticado
+     */
+    public static void executarMenuPrincipal(Administrador adminLogado) {
+        if (adminLogado != null) {
+            administradorLogado = adminLogado;
+            System.out.println("Bem-vindo ao módulo de administradores, " + adminLogado.getNomeAdministrador() + "!");
+        }
+        
         int opcao;
         
         do {
-            if (administradorLogado == null) {
-                exibirMenuNaoLogado();
-            } else {
-                exibirMenuLogado();
-            }
+            exibirMenuLogado();
             
             opcao = lerOpcao();
             
@@ -48,23 +57,14 @@ public class AdministradorMain {
         } while (opcao != 0);
     }
     
-    private static void exibirMenuNaoLogado() {
-        System.out.println("\n╔═════════════════════════════════════╗");
-        System.out.println("║        SISTEMA ADMINISTRADOR        ║");
-        System.out.println("║            HEMOCONNECT              ║");
-        System.out.println("╠═════════════════════════════════════╣");
-        System.out.println("║ 1.  Fazer Login                     ║");
-        System.out.println("║ 0.  Sair                            ║");
-        System.out.println("╚═════════════════════════════════════╝");
-        System.out.print("Escolha uma opção: ");
-    }
-    
     private static void exibirMenuLogado() {
         System.out.println("\n╔═════════════════════════════════════╗");
         System.out.println("║        SISTEMA ADMINISTRADOR        ║");
         System.out.println("║            HEMOCONNECT              ║");
         System.out.println("╠═════════════════════════════════════╣");
-        System.out.println("║ Logado como: " + String.format("%-19s", administradorLogado.getNomeAdministrador()) + "║");
+        String nomeAdmin = administradorLogado.getNomeAdministrador();
+        String linhaLogin = String.format("║ Logado como: %-23s║", nomeAdmin);
+        System.out.println(linhaLogin);
         System.out.println("╠═════════════════════════════════════╣");
         System.out.println("║ 1.  Listar Administradores          ║");
         System.out.println("║ 2.  Criar Administrador             ║");
