@@ -49,20 +49,29 @@ public class AdministradorMain {
     }
     
     private static void exibirMenuNaoLogado() {
-        System.out.println("\n=== SISTEMA ADMINISTRADOR - HEMOCONNECT ===");
-        System.out.println("1. Fazer Login");
-        System.out.println("0. Sair");
+        System.out.println("\n╔═════════════════════════════════════╗");
+        System.out.println("║        SISTEMA ADMINISTRADOR        ║");
+        System.out.println("║            HEMOCONNECT              ║");
+        System.out.println("╠═════════════════════════════════════╣");
+        System.out.println("║ 1.  Fazer Login                     ║");
+        System.out.println("║ 0.  Sair                            ║");
+        System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: ");
     }
     
     private static void exibirMenuLogado() {
-        System.out.println("\n=== SISTEMA ADMINISTRADOR - HEMOCONNECT ===");
-        System.out.println("Logado como: " + administradorLogado.getNomeAdministrador());
-        System.out.println("1. Listar Administradores");
-        System.out.println("2. Criar Administrador");
-        System.out.println("3. Remover Administrador");
-        System.out.println("4. Fazer Logout");
-        System.out.println("0. Sair");
+        System.out.println("\n╔═════════════════════════════════════╗");
+        System.out.println("║        SISTEMA ADMINISTRADOR        ║");
+        System.out.println("║            HEMOCONNECT              ║");
+        System.out.println("╠═════════════════════════════════════╣");
+        System.out.println("║ Logado como: " + String.format("%-19s", administradorLogado.getNomeAdministrador()) + "║");
+        System.out.println("╠═════════════════════════════════════╣");
+        System.out.println("║ 1.  Listar Administradores          ║");
+        System.out.println("║ 2.  Criar Administrador             ║");
+        System.out.println("║ 3.  Remover Administrador           ║");
+        System.out.println("║ 4.  Fazer Logout                    ║");
+        System.out.println("║ 0.  Sair                            ║");
+        System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: ");
     }
     

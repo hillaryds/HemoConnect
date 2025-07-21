@@ -192,14 +192,16 @@ public class HospitalView {
     }
     
     public static void exibirMenuHospital() {
-        System.out.println("=== MENU DO HOSPITAL ===");
-        System.out.println("1. Listar hospitais");
-        System.out.println("2. Criar hospital");
-        System.out.println("3. Buscar por cidade");
-        System.out.println("4. Buscar por nome");
-        System.out.println("5. Remover hospital");
-        System.out.println("0. Sair");
-        System.out.println("=======================");
+        System.out.println("\n╔═════════════════════════════════════╗");
+        System.out.println("║          MENU DE HOSPITAIS          ║");
+        System.out.println("╠═════════════════════════════════════╣");
+        System.out.println("║ 1.  Listar Hospitais                ║");
+        System.out.println("║ 2.  Criar Hospital                  ║");
+        System.out.println("║ 3.  Buscar por Cidade               ║");
+        System.out.println("║ 4.  Buscar por Nome                 ║");
+        System.out.println("║ 5.  Remover Hospital                ║");
+        System.out.println("║ 0.  Sair                            ║");
+        System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: ");
     }
     
