@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
- * Controller - Classe TriagemControllerDB
+ * Controller - Classe TriagemController
  * Responsável pela lógica de negócio, manipulação de dados e coordenação entre Model e View
  * Integrado com PostgreSQL através do DAO
  */
-public class TriagemControllerDB {
+public class TriagemController {
     
     /**
      * Cria uma nova triagem e a persiste no PostgreSQL
