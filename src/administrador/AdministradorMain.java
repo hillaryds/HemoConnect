@@ -3,6 +3,16 @@ package administrador;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Classe principal do módulo Administrador
+ * 
+ * Regra de Negócio:
+ * - Existe um usuário principal pré-cadastrado no banco
+ * - Apenas administradores logados podem cadastrar outros administradores
+ * - Menu inicial: apenas Login e Sair
+ * - Um administrador deve estar associado a um hospital
+ * - Um hospital pode ter um ou mais administradores
+ */
 public class AdministradorMain {
     
     private static final Scanner scanner = new Scanner(System.in);
@@ -40,8 +50,7 @@ public class AdministradorMain {
     
     private static void exibirMenuNaoLogado() {
         System.out.println("\n=== SISTEMA ADMINISTRADOR - HEMOCONNECT ===");
-        System.out.println("1. Cadastrar Novo Administrador");
-        System.out.println("2. Fazer Login");
+        System.out.println("1. Fazer Login");
         System.out.println("0. Sair");
         System.out.print("Escolha uma opção: ");
     }
@@ -60,9 +69,6 @@ public class AdministradorMain {
     private static void processarOpcaoNaoLogado(int opcao) {
         switch (opcao) {
             case 1:
-                criarAdministrador();
-                break;
-            case 2:
                 realizarLogin();
                 break;
             case 0:
