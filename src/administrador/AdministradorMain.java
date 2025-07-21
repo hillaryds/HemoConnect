@@ -40,7 +40,8 @@ public class AdministradorMain {
     
     private static void exibirMenuNaoLogado() {
         System.out.println("\n=== SISTEMA ADMINISTRADOR - HEMOCONNECT ===");
-        System.out.println("1. Fazer Login");
+        System.out.println("1. Cadastrar Novo Administrador");
+        System.out.println("2. Fazer Login");
         System.out.println("0. Sair");
         System.out.print("Escolha uma opção: ");
     }
@@ -59,6 +60,9 @@ public class AdministradorMain {
     private static void processarOpcaoNaoLogado(int opcao) {
         switch (opcao) {
             case 1:
+                criarAdministrador();
+                break;
+            case 2:
                 realizarLogin();
                 break;
             case 0:
