@@ -11,6 +11,14 @@ import java.sql.Connection;
 public class DoacaoMain {
 
     public static void main(String[] args) {
+        executarMenuPrincipal();
+    }
+    
+    /**
+     * Executa o menu principal do sistema de doações
+     * Método utilizado pelo MainSystem para integração
+     */
+    public static void executarMenuPrincipal() {
         // Exibe cabeçalho
         DoacaoView.exibirCabecalho();
 
