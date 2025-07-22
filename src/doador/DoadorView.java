@@ -4,9 +4,42 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Classe responsável pela interface de usuário do módulo de doadores.
+ * 
+ * <p>Esta classe implementa o padrão MVC (Model-View-Controller) e é responsável
+ * por toda a interação com o usuário no contexto de doadores, incluindo:</p>
+ * 
+ * <ul>
+ *   <li>Exibição de dados de doadores</li>
+ *   <li>Coleta de dados do usuário</li>
+ *   <li>Apresentação de menus e opções</li>
+ *   <li>Exibição de mensagens de status e erro</li>
+ *   <li>Formatação de listagens e relatórios</li>
+ * </ul>
+ * 
+ * <p>A classe utiliza Scanner para entrada de dados e System.out para saída,
+ * proporcionando uma interface de linha de comando amigável e funcional.</p>
+ * 
+ * @author Sistema HemoConnect
+ * @version 1.0
+ * @since 1.0
+ * @see Doador
+ * @see DoadorController
+ */
 public class DoadorView {
+    
+    /** Scanner compartilhado para entrada de dados do usuário */
     private static final Scanner scanner = new Scanner(System.in);
     
+    /**
+     * Exibe os dados completos de um doador de forma formatada.
+     * 
+     * <p>Apresenta todas as informações do doador incluindo dados pessoais,
+     * informações médicas, histórico de doações e status atual de elegibilidade.</p>
+     * 
+     * @param doador Doador cujos dados serão exibidos
+     */
     public static void exibirDoador(Doador doador) {
         System.out.println("=== DADOS DO DOADOR ===");
         System.out.println("ID: " + (doador.getId() != null ? doador.getId() : "N/A"));
@@ -26,6 +59,14 @@ public class DoadorView {
         System.out.println("======================");
     }
     
+    /**
+     * Exibe uma lista de doadores em formato tabular.
+     * 
+     * <p>Apresenta os doadores em uma tabela organizada com as principais
+     * informações: ID, Nome, CPF, Tipo Sanguíneo, Idade, Cidade e Hospital.</p>
+     * 
+     * @param doadores Lista de doadores a ser exibida
+     */
     public static void exibirListaDoadores(List<Doador> doadores) {
         if (doadores.isEmpty()) {
             System.out.println("Nenhum doador encontrado.");
