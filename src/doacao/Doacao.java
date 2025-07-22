@@ -210,10 +210,6 @@ public class Doacao {
 
     /**
      * Valida se os dados básicos da doação estão preenchidos
-     * 
-     * <p>Verifica se todos os campos obrigatórios possuem valores válidos,
-     * mas não valida as regras de negócio específicas.</p>
-     * 
      * @return true se todos os campos obrigatórios estão preenchidos
      */
     public boolean validarDados() {
@@ -326,24 +322,6 @@ public class Doacao {
         }
         Date hoje = new Date(System.currentTimeMillis());
         return (hoje.getTime() - ultimaDoacao.getTime()) / (1000 * 60 * 60 * 24);
-    }
-
-    /**
-     * Verifica se o doador pode realizar nova doação baseado no intervalo mínimo
-     * @param sexoDoador Sexo do doador ("M"/"MASCULINO" ou "F"/"FEMININO")
-     * @param ultimaDoacao Data da última doação ou null se primeira doação
-     * @return true se o intervalo mínimo foi respeitado
-     */
-    public static boolean podeDoarNovamente(String sexoDoador, Date ultimaDoacao) {
-        long diasDesdeUltima = diasDesdeUltimaDoacao(ultimaDoacao);
-
-        if ("M".equalsIgnoreCase(sexoDoador) || "MASCULINO".equalsIgnoreCase(sexoDoador)) {
-            return diasDesdeUltima >= 60; // Homens: 60 dias
-        } else if ("F".equalsIgnoreCase(sexoDoador) || "FEMININO".equalsIgnoreCase(sexoDoador)) {
-            return diasDesdeUltima >= 90; // Mulheres: 90 dias
-        }
-
-        return false; // Sexo não reconhecido
     }
 
     /**

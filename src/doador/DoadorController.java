@@ -181,8 +181,12 @@ public class DoadorController {
         }
     }
     
-    public static boolean podeDoar(Long doadorId) {
+    public static boolean verificarDisponibilidadeDoacao(Long doadorId) {
         try {
+            if (doadorId == null) {
+                return false;
+            }
+            
             Doador doador = DoadorDAO.buscarPorId(doadorId);
             if (doador == null) {
                 return false;
