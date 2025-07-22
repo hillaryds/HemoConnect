@@ -29,7 +29,22 @@ public class DoacaoController {
                 return null;
             }
 
-            return DoacaoDAO.inserir(doacao);
+            // Inserir a doação no banco
+            Doacao doacaoSalva = DoacaoDAO.inserir(doacao);
+            
+            if (doacaoSalva != null) {
+                // CRÍTICO: Atualizar a data da última doação do doador
+                boolean atualizouDoador = DoadorController.atualizarUltimaDoacao(
+                    doacao.getDoadorId(), 
+                    doacao.getData()
+                );
+                
+                if (!atualizouDoador) {
+                    DoacaoView.exibirMensagemErro("AVISO: Doação registrada, mas falha ao atualizar última doação do doador!");
+                }
+            }
+            
+            return doacaoSalva;
 
         } catch (SQLException e) {
             DoacaoView.exibirMensagemErro("Erro ao registrar doação: " + e.getMessage());
@@ -403,13 +418,12 @@ public class DoacaoController {
     
     private static boolean validarDoador(Long idDoador) {
         try {
-            boolean podeDoar = DoadorController.podeDoar(idDoador);
+            boolean podeDoar = DoadorController.verificarDisponibilidadeDoacao(idDoador);
             
             if (!podeDoar) {
                 DoacaoView.exibirMensagemErro("ERRO - Este doador ainda não pode doar!");
                 DoacaoView.exibirMensagemErro("Não passou o intervalo mínimo entre doações");
-                DoacaoView.exibirMensagemErro("Homens: 60 dias entre doações");
-                DoacaoView.exibirMensagemErro("Mulheres: 90 dias entre doações");
+                DoacaoView.exibirMensagemErro("Intervalo mínimo: 60 dias entre doações");
                 DoacaoView.exibirMensagemErro("Aguarde o período mínimo ou selecione outro doador");
                 return false;
             }
