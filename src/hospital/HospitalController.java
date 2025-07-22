@@ -170,6 +170,40 @@ public class HospitalController {
     }
     
     /**
+     * Atualiza um hospital com interação do usuário
+     */
+    public static void atualizarHospitalInterativo() {
+        String nome = HospitalView.solicitarNomeParaBusca();
+        
+        if (nome != null && !nome.trim().isEmpty()) {
+            Hospital hospitalAtual = buscarHospitalPorNome(nome);
+            
+            if (hospitalAtual != null) {
+                String[] dados = HospitalView.solicitarDadosAtualizacao(hospitalAtual);
+                
+                if (dados != null) {
+                    Hospital hospitalAtualizado = new Hospital(
+                        hospitalAtual.getId(),
+                        dados[0], // nome
+                        dados[1], // cep
+                        dados[2]  // cidade
+                    );
+                    
+                    boolean sucesso = atualizarHospital(hospitalAtualizado);
+                    
+                    if (sucesso) {
+                        HospitalView.exibirMensagemAtualizacaoSucesso(hospitalAtualizado);
+                    } else {
+                        HospitalView.exibirMensagemAtualizacaoFalha(nome);
+                    }
+                }
+            } else {
+                HospitalView.exibirMensagemErro("Hospital não encontrado com nome: " + nome);
+            }
+        }
+    }
+    
+    /**
      * Remove um hospital pelo ID
      * @param id ID do hospital a ser removido
      * @return true se remoção foi bem-sucedida, false caso contrário

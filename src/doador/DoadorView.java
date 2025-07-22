@@ -4,9 +4,42 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Classe responsável pela interface de usuário do módulo de doadores.
+ * 
+ * <p>Esta classe implementa o padrão MVC (Model-View-Controller) e é responsável
+ * por toda a interação com o usuário no contexto de doadores, incluindo:</p>
+ * 
+ * <ul>
+ *   <li>Exibição de dados de doadores</li>
+ *   <li>Coleta de dados do usuário</li>
+ *   <li>Apresentação de menus e opções</li>
+ *   <li>Exibição de mensagens de status e erro</li>
+ *   <li>Formatação de listagens e relatórios</li>
+ * </ul>
+ * 
+ * <p>A classe utiliza Scanner para entrada de dados e System.out para saída,
+ * proporcionando uma interface de linha de comando amigável e funcional.</p>
+ * 
+ * @author Sistema HemoConnect
+ * @version 1.0
+ * @since 1.0
+ * @see Doador
+ * @see DoadorController
+ */
 public class DoadorView {
+    
+    /** Scanner compartilhado para entrada de dados do usuário */
     private static final Scanner scanner = new Scanner(System.in);
     
+    /**
+     * Exibe os dados completos de um doador de forma formatada.
+     * 
+     * <p>Apresenta todas as informações do doador incluindo dados pessoais,
+     * informações médicas, histórico de doações e status atual de elegibilidade.</p>
+     * 
+     * @param doador Doador cujos dados serão exibidos
+     */
     public static void exibirDoador(Doador doador) {
         System.out.println("=== DADOS DO DOADOR ===");
         System.out.println("ID: " + (doador.getId() != null ? doador.getId() : "N/A"));
@@ -26,6 +59,14 @@ public class DoadorView {
         System.out.println("======================");
     }
     
+    /**
+     * Exibe uma lista de doadores em formato tabular.
+     * 
+     * <p>Apresenta os doadores em uma tabela organizada com as principais
+     * informações: ID, Nome, CPF, Tipo Sanguíneo, Idade, Cidade e Hospital.</p>
+     * 
+     * @param doadores Lista de doadores a ser exibida
+     */
     public static void exibirListaDoadores(List<Doador> doadores) {
         if (doadores.isEmpty()) {
             System.out.println("Nenhum doador encontrado.");
@@ -192,7 +233,8 @@ public class DoadorView {
         System.out.println("║ 2.  Criar Doador                    ║");
         System.out.println("║ 3.  Buscar Doador por CPF           ║");
         System.out.println("║ 4.  Listar Doadores por Hospital    ║");
-        System.out.println("║ 5.  Remover Doador                  ║");
+        System.out.println("║ 5.  Atualizar Doador                ║");
+        System.out.println("║ 6.  Remover Doador                  ║");
         System.out.println("║ 0.  Voltar ao Menu Principal        ║");
         System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: "); 
@@ -238,5 +280,108 @@ public class DoadorView {
         }
         
         System.out.println("=======================================");
+    }
+    
+    public static Object[] solicitarDadosAtualizacao(Doador doadorAtual) {
+        System.out.println("=== ATUALIZAR DOADOR ===");
+        System.out.println("Dados atuais:");
+        exibirDoador(doadorAtual);
+        System.out.println("\nDigite os novos dados (deixe vazio para manter o valor atual):");
+        
+        System.out.print("Nome [" + doadorAtual.getNome() + "]: ");
+        String nome = scanner.nextLine();
+        if (nome.trim().isEmpty()) {
+            nome = doadorAtual.getNome();
+        }
+        
+        System.out.print("Sexo [" + doadorAtual.getSexo() + "]: ");
+        String sexo = scanner.nextLine();
+        if (sexo.trim().isEmpty()) {
+            sexo = doadorAtual.getSexo();
+        }
+        
+        System.out.print("Tipo Sanguíneo [" + doadorAtual.getTipoSanguineo() + "]: ");
+        String tipoSanguineo = scanner.nextLine();
+        if (tipoSanguineo.trim().isEmpty()) {
+            tipoSanguineo = doadorAtual.getTipoSanguineo();
+        }
+        
+        System.out.print("Data de Nascimento [" + doadorAtual.getDataNascimento() + "] (YYYY-MM-DD): ");
+        String dataInput = scanner.nextLine();
+        Date dataNascimento = doadorAtual.getDataNascimento();
+        if (!dataInput.trim().isEmpty()) {
+            try {
+                dataNascimento = Date.valueOf(dataInput);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Data inválida. Mantendo valor atual.");
+            }
+        }
+        
+        System.out.print("Telefone [" + doadorAtual.getTelefone() + "]: ");
+        String telefoneInput = scanner.nextLine();
+        Long telefone = doadorAtual.getTelefone();
+        if (!telefoneInput.trim().isEmpty()) {
+            try {
+                telefone = Long.parseLong(telefoneInput);
+            } catch (NumberFormatException e) {
+                System.out.println("Telefone inválido. Mantendo valor atual.");
+            }
+        }
+        
+        System.out.print("Bairro [" + doadorAtual.getBairro() + "]: ");
+        String bairro = scanner.nextLine();
+        if (bairro.trim().isEmpty()) {
+            bairro = doadorAtual.getBairro();
+        }
+        
+        System.out.print("Nacionalidade [" + doadorAtual.getNacionalidade() + "]: ");
+        String nacionalidade = scanner.nextLine();
+        if (nacionalidade.trim().isEmpty()) {
+            nacionalidade = doadorAtual.getNacionalidade();
+        }
+        
+        System.out.print("Cidade [" + doadorAtual.getCidade() + "]: ");
+        String cidade = scanner.nextLine();
+        if (cidade.trim().isEmpty()) {
+            cidade = doadorAtual.getCidade();
+        }
+        
+        System.out.print("ID do Hospital [" + doadorAtual.getIdHospital() + "]: ");
+        String hospitalInput = scanner.nextLine();
+        Long idHospital = doadorAtual.getIdHospital();
+        if (!hospitalInput.trim().isEmpty()) {
+            try {
+                idHospital = Long.parseLong(hospitalInput);
+                if (idHospital <= 0) {
+                    System.out.println("ID do hospital inválido. Mantendo valor atual.");
+                    idHospital = doadorAtual.getIdHospital();
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("ID do hospital inválido. Mantendo valor atual.");
+            }
+        }
+        
+        System.out.println("==========================");
+        
+        return new Object[]{doadorAtual.getId(), nome, doadorAtual.getCpf(), sexo, tipoSanguineo, 
+                           dataNascimento, telefone, bairro, nacionalidade, cidade, 
+                           doadorAtual.getUltimaDoacao(), idHospital};
+    }
+    
+    public static void exibirMensagemAtualizacaoSucesso(Doador doador) {
+        System.out.println("=== DOADOR ATUALIZADO COM SUCESSO ===");
+        System.out.println("ID: " + doador.getId());
+        System.out.println("Nome: " + doador.getNome());
+        System.out.println("CPF: " + doador.getCpf());
+        System.out.println("Tipo Sanguíneo: " + doador.getTipoSanguineo());
+        System.out.println("Cidade: " + doador.getCidade());
+        System.out.println("===================================");
+    }
+    
+    public static void exibirMensagemAtualizacaoFalha(Long cpf) {
+        System.out.println("=== ERRO NA ATUALIZAÇÃO ===");
+        System.out.println("Não foi possível atualizar o doador com CPF " + cpf + ".");
+        System.out.println("Verifique se os dados estão corretos.");
+        System.out.println("===========================");
     }
 }

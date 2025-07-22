@@ -32,6 +32,9 @@ public class HospitalMain {
                     buscarPorNome();
                     break;
                 case 5:
+                    atualizarHospital();
+                    break;
+                case 6:
                     removerHospital();
                     break;
                 case 0:
@@ -93,6 +96,22 @@ public class HospitalMain {
                 HospitalView.exibirMensagemErro("Hospital não encontrado com nome: " + nome);
             }
         }
+    }
+    
+    private static void atualizarHospital() {
+        System.out.println("\n=== ATUALIZANDO HOSPITAL ===");
+        
+        List<Hospital> hospitais = HospitalController.listarTodosHospitais();
+        
+        if (hospitais.isEmpty()) {
+            System.out.println("Nenhum hospital encontrado para atualização.");
+            return;
+        }
+        
+        HospitalView.exibirListaHospitais(hospitais);
+        System.out.println("\nSelecione o hospital para atualizar:");
+        
+        HospitalController.atualizarHospitalInterativo();
     }
     
     

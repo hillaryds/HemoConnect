@@ -4,12 +4,50 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Classe principal do módulo de doadores.
+ * 
+ * <p>Esta classe serve como ponto de entrada para o sistema de gerenciamento
+ * de doadores, implementando o menu principal e coordenando as operações
+ * disponíveis para gestão de doadores.</p>
+ * 
+ * <p>Funcionalidades disponíveis:</p>
+ * <ul>
+ *   <li>Listar todos os doadores</li>
+ *   <li>Criar novo doador</li>
+ *   <li>Buscar doador por CPF</li>
+ *   <li>Listar doadores por hospital</li>
+ *   <li>Atualizar dados de doador</li>
+ *   <li>Remover doador</li>
+ * </ul>
+ * 
+ * @author Sistema HemoConnect
+ * @version 1.0
+ * @since 1.0
+ * @see DoadorController
+ * @see DoadorView
+ * @see Doador
+ */
 public class DoadorMain {
+    
+    /** Scanner para entrada de dados do usuário */
     private static final Scanner scanner = new Scanner(System.in);
+    
+    /**
+     * Método principal de entrada do módulo.
+     * 
+     * @param args Argumentos da linha de comando (não utilizados)
+     */
     public static void main(String[] args) {
         executarMenuPrincipal();
     }
 
+    /**
+     * Executa o menu principal do módulo de doadores.
+     * 
+     * <p>Apresenta as opções disponíveis e processa a escolha do usuário
+     * até que a opção de saída seja selecionada.</p>
+     */
     public static void executarMenuPrincipal() {
         int opcao;
         
@@ -31,6 +69,9 @@ public class DoadorMain {
                     listarPorHospital();
                     break;
                 case 5:
+                    atualizarDoador();
+                    break;
+                case 6:
                     removerDoador();
                     break;
                 case 0:
@@ -106,6 +147,22 @@ public class DoadorMain {
         } catch (NumberFormatException e) {
             System.out.println("ID do hospital inválido. Digite apenas números.");
         }
+    }
+    
+    private static void atualizarDoador() {
+        System.out.println("\n=== ATUALIZANDO DOADOR ===");
+        
+        List<Doador> doadores = DoadorController.listarTodosDoadores();
+        
+        if (doadores.isEmpty()) {
+            System.out.println("Nenhum doador encontrado para atualização.");
+            return;
+        }
+        
+        DoadorView.exibirListaDoadores(doadores);
+        System.out.println("\nSelecione o doador para atualizar:");
+        
+        DoadorController.atualizarDoadorInterativo();
     }
     
     private static void removerDoador() {
