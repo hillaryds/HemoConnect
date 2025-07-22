@@ -31,6 +31,9 @@ public class DoadorMain {
                     listarPorHospital();
                     break;
                 case 5:
+                    atualizarDoador();
+                    break;
+                case 6:
                     removerDoador();
                     break;
                 case 0:
@@ -106,6 +109,22 @@ public class DoadorMain {
         } catch (NumberFormatException e) {
             System.out.println("ID do hospital inválido. Digite apenas números.");
         }
+    }
+    
+    private static void atualizarDoador() {
+        System.out.println("\n=== ATUALIZANDO DOADOR ===");
+        
+        List<Doador> doadores = DoadorController.listarTodosDoadores();
+        
+        if (doadores.isEmpty()) {
+            System.out.println("Nenhum doador encontrado para atualização.");
+            return;
+        }
+        
+        DoadorView.exibirListaDoadores(doadores);
+        System.out.println("\nSelecione o doador para atualizar:");
+        
+        DoadorController.atualizarDoadorInterativo();
     }
     
     private static void removerDoador() {
