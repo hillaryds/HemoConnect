@@ -179,11 +179,17 @@ public class DoadorController {
                 return false;
             }
             
-            // Verifica intervalo desde última doação considerando o sexo do doador
-            return doacao.Doacao.podeDoarNovamente(doador.getSexo(), doador.getUltimaDoacao());
+            // Verifica intervalo de 60 dias desde última doação (para todos os doadores)
+            if (doador.getUltimaDoacao() != null) {
+                long diffInMillies = System.currentTimeMillis() - doador.getUltimaDoacao().getTime();
+                long diffInDays = diffInMillies / (24 * 60 * 60 * 1000);
+                return diffInDays >= 60;
+            }
+            
+            return true; // Primeira doação
             
         } catch (SQLException e) {
-            System.err.println("Erro ao verificar se doador pode doar: " + e.getMessage());
+            System.err.println("Erro ao verificar disponibilidade para doação: " + e.getMessage());
             return false;
         }
     }
