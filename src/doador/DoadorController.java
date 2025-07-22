@@ -154,6 +154,45 @@ public class DoadorController {
         }
     }
     
+    public static void atualizarDoadorInterativo() {
+        Long cpf = DoadorView.solicitarCpf();
+        
+        if (cpf != null) {
+            Doador doadorAtual = buscarDoadorPorCpf(cpf);
+            
+            if (doadorAtual != null) {
+                Object[] dados = DoadorView.solicitarDadosAtualizacao(doadorAtual);
+                
+                if (dados != null) {
+                    Doador doadorAtualizado = new Doador(
+                        (Long) dados[0],        // id
+                        (String) dados[1],      // nome
+                        (Long) dados[2],        // cpf
+                        (String) dados[3],      // sexo
+                        (String) dados[4],      // tipoSanguineo
+                        (Date) dados[5],        // dataNascimento
+                        (Long) dados[6],        // telefone
+                        (String) dados[7],      // bairro
+                        (String) dados[8],      // nacionalidade
+                        (String) dados[9],      // cidade
+                        (Date) dados[10],       // ultimaDoacao
+                        (Long) dados[11]        // idHospital
+                    );
+                    
+                    boolean sucesso = atualizarDoador(doadorAtualizado);
+                    
+                    if (sucesso) {
+                        DoadorView.exibirMensagemAtualizacaoSucesso(doadorAtualizado);
+                    } else {
+                        DoadorView.exibirMensagemAtualizacaoFalha(cpf);
+                    }
+                }
+            } else {
+                DoadorView.exibirMensagemErro("Doador com CPF " + cpf + " não encontrado.");
+            }
+        }
+    }
+    
     public static boolean atualizarUltimaDoacao(Long doadorId, Date dataDoacao) {
         try {
             return DoadorDAO.atualizarUltimaDoacao(doadorId, dataDoacao);

@@ -199,7 +199,8 @@ public class HospitalView {
         System.out.println("║ 2.  Criar Hospital                  ║");
         System.out.println("║ 3.  Buscar por Cidade               ║");
         System.out.println("║ 4.  Buscar por Nome                 ║");
-        System.out.println("║ 5.  Remover Hospital                ║");
+        System.out.println("║ 5.  Atualizar Hospital              ║");
+        System.out.println("║ 6.  Remover Hospital                ║");
         System.out.println("║ 0.  Voltar ao Menu Principal        ║");
         System.out.println("╚═════════════════════════════════════╝");
         System.out.print("Escolha uma opção: ");
@@ -214,5 +215,63 @@ public class HospitalView {
         System.out.print(mensagem + " (s/n): ");
         String resposta = scanner.nextLine();
         return resposta.toLowerCase().startsWith("s");
+    }
+    
+    /**
+     * Solicita dados para atualização de hospital
+     * @param hospitalAtual Hospital com dados atuais
+     * @return Array com os novos dados ou null se cancelado
+     */
+    public static String[] solicitarDadosAtualizacao(Hospital hospitalAtual) {
+        System.out.println("=== ATUALIZAR HOSPITAL ===");
+        System.out.println("Dados atuais:");
+        exibirHospital(hospitalAtual);
+        System.out.println("\nDigite os novos dados (deixe vazio para manter o valor atual):");
+        
+        System.out.print("Nome [" + hospitalAtual.getNome() + "]: ");
+        String nome = scanner.nextLine();
+        if (nome.trim().isEmpty()) {
+            nome = hospitalAtual.getNome();
+        }
+        
+        System.out.print("CEP [" + hospitalAtual.getCep() + "]: ");
+        String cep = scanner.nextLine();
+        if (cep.trim().isEmpty()) {
+            cep = hospitalAtual.getCep();
+        }
+        
+        System.out.print("Cidade [" + hospitalAtual.getCidade() + "]: ");
+        String cidade = scanner.nextLine();
+        if (cidade.trim().isEmpty()) {
+            cidade = hospitalAtual.getCidade();
+        }
+        
+        System.out.println("==========================");
+        
+        return new String[]{nome, cep, cidade};
+    }
+    
+    /**
+     * Exibe mensagem de sucesso na atualização
+     * @param hospital Hospital atualizado
+     */
+    public static void exibirMensagemAtualizacaoSucesso(Hospital hospital) {
+        System.out.println("=== HOSPITAL ATUALIZADO COM SUCESSO ===");
+        System.out.println("ID: " + hospital.getId());
+        System.out.println("Nome: " + hospital.getNome());
+        System.out.println("CEP: " + hospital.getCep());
+        System.out.println("Cidade: " + hospital.getCidade());
+        System.out.println("======================================");
+    }
+    
+    /**
+     * Exibe mensagem de falha na atualização
+     * @param nome Nome do hospital que falhou
+     */
+    public static void exibirMensagemAtualizacaoFalha(String nome) {
+        System.out.println("=== ERRO NA ATUALIZAÇÃO ===");
+        System.out.println("Não foi possível atualizar o hospital: " + nome);
+        System.out.println("Verifique se os dados estão corretos.");
+        System.out.println("===========================");
     }
 }
